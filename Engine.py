@@ -121,11 +121,45 @@ class GameState:
 
 
     def getBishopMoves(self, r, c, moves):
-        pass
+        directions = [(1, 1), (-1, 1), (-1, -1), (1, -1)]
+        if self.whiteToMove == self.translate[self.board[r][c][0]]:
+            for dir in directions:
+                for step in range(1, 8):
+                    new_r, new_c = r+dir[0]*step, c+dir[1]*step
+                    if new_r < 8 and new_c < 8:     
+                        if self.board[new_r][new_c][0] == '-':
+                            moves.append(Move((r, c), (new_r, new_c), self.board))
+                        else:
+                            if self.translate[self.board[new_r][new_c][0]] != self.whiteToMove:
+                                moves.append(Move((r, c), (new_r, new_c), self.board))
+                            break
+
     def getQueenMoves(self, r, c, moves):
-        pass
+        directions = [(1, 1), (-1, 1), (-1, -1), (1, -1), (0, 1), (1, 0), (-1, 0), (0, -1)]
+        if self.whiteToMove == self.translate[self.board[r][c][0]]:
+            for dir in directions:
+                for step in range(1, 8):
+                    new_r, new_c = r+dir[0]*step, c+dir[1]*step
+                    if new_r < 8 and new_c < 8:     
+                        if self.board[new_r][new_c][0] == '-':
+                            moves.append(Move((r, c), (new_r, new_c), self.board))
+                        else:
+                            if self.translate[self.board[new_r][new_c][0]] != self.whiteToMove:
+                                moves.append(Move((r, c), (new_r, new_c), self.board))
+                            break
+
     def getKingMoves(self, r, c, moves):
-        pass
+        directions = [(1, 1), (-1, 1), (-1, -1), (1, -1), (0, 1), (1, 0), (-1, 0), (0, -1)]
+        if self.whiteToMove == self.translate[self.board[r][c][0]]:
+            for dir in directions:
+                new_r, new_c = r+dir[0], c+dir[1]
+                if new_r < 8 and new_c < 8:     
+                    if self.board[new_r][new_c][0] == '-':
+                        moves.append(Move((r, c), (new_r, new_c), self.board))
+                    else:
+                        if self.translate[self.board[new_r][new_c][0]] != self.whiteToMove:
+                            moves.append(Move((r, c), (new_r, new_c), self.board))
+                        break
         
 
 class Move():
