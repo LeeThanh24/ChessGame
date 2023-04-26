@@ -13,7 +13,7 @@ bishop (B): con tuong
 queen (Q): con hau 
 king (K): con vua 
 """
-
+from abc import abstractclassmethod
 
 class GameState:
     def __init__(self):
@@ -25,12 +25,12 @@ class GameState:
         """
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-            ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
+            ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "wR", "--", "--", "--", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
+            ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "--"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
         ]
         # To determine white is able to move first
@@ -38,15 +38,95 @@ class GameState:
 
         # To capture the movement of each piece
         self.moveLog = []
+        self.translate = {'w': True,
+                          'b': False}
+        self.moveFunction = {'p' : self.getPawnMoves, 
+                             'N': self.getKnightMoves, 
+                             'R': self.getRookMoves, 
+                             'B': self.getBishopMoves,
+                             'Q': self.getQueenMoves,
+                             'K': self.getKingMoves}
 
-    def makeMove (self,move ) :
-        self.board[move.startRow][move.startCol]="--" #we want to move so leave the square
-        self.board[move.endRow][move.endCol]=move.pieceMoved
-        self.moveLog.append(move) #log the move in order to  undo if necessary
-        self.whiteToMove=  not self.whiteToMove #swap player
+    def makeMove(self, move):
+        r, c = move.startRow, move.startCol
+        r_des, c_des = move.endRow, move.endCol
+        recentPiece = self.board[r][c][1]
+        possibleMoves = [(i.endRow, i.endCol) for i in self.getAllPossibleMoves(recentPiece, r, c)]
+        
+        if (r_des, c_des) in possibleMoves:
+            self.board[move.startRow][move.startCol]="--" #we want to move so leave the square
+            self.board[move.endRow][move.endCol]=move.pieceMoved
+            print(move.getChessNotation())
 
-"""Movement of each piece"""
+            self.moveLog.append(move) #log the move in order to  undo if necessary
+            self.whiteToMove=  not self.whiteToMove #swap player
 
+#Movement of each piece
+    def getAllPossibleMoves(self, piece, r, c):
+        moves = []
+        if piece != '-':
+            self.moveFunction[piece](r, c, moves)
+        return moves
+
+    def getPawnMoves(self, r, c, moves):
+        if self.whiteToMove == True:
+            if self.board[r][c][0] == 'w' and r != 0:
+                if r == 6 and self.board[r-2][c] == '--':
+                    moves.append(Move((r, c), (r-2, c), self.board))
+                if self.board[r-1][c] == '--':
+                    moves.append(Move((r, c), (r-1, c), self.board))
+                if c - 1 >= 0:
+                    if self.board[r-1][c-1][0] == 'b':
+                        moves.append(Move((r, c), (r-1, c-1), self.board))
+                if c + 1 <= 7:
+                    if self.board[r-1][c+1][0] == 'b':
+                        moves.append(Move((r, c), (r-1, c+1), self.board))
+        else:
+            if self.board[r][c][0] == 'b' and r != 7:
+                if r == 1 and self.board[r+2][c] == '--':
+                    moves.append(Move((r, c), (r+2, c), self.board))
+                if self.board[r+1][c] == '--':
+                    moves.append(Move((r, c), (r+1, c), self.board))
+                if c - 1 >= 0:
+                    if self.board[r+1][c-1][0] == 'w':
+                        moves.append(Move((r, c), (r+1, c-1), self.board))
+                if c + 1 <= 7:
+                    if self.board[r+1][c+1][0] == 'w':
+                        moves.append(Move((r, c), (r+1, c+1), self.board))
+        return moves
+
+    def getKnightMoves(self, r, c, moves):
+        assumption = [(r+1, c+2), (r+2, c+1), (r-1, c+2), (r+2, c-1), (r-2, c+1), (r+1, c-2), (r-1, c-2), (r-2, c-1)]
+        
+        if self.whiteToMove == self.translate[self.board[r][c][0]]:
+            for ele in assumption:
+                if ele[0] < 8 and ele[1] < 8:
+                    if self.board[ele[0]][ele[1]][0] == '-' or self.whiteToMove != self.translate[self.board[ele[0]][ele[1]][0]]:
+                        moves.append(Move((r, c), (ele[0], ele[1]), self.board))
+
+
+    def getRookMoves(self, r, c, moves):
+        directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+        if self.whiteToMove == self.translate[self.board[r][c][0]]:
+            for dir in directions:
+                for step in range(1, 8):
+                    new_r, new_c = r+dir[0]*step, c+dir[1]*step
+                    if new_r < 8 and new_c < 8:     
+                        if self.board[new_r][new_c][0] == '-':
+                            moves.append(Move((r, c), (new_r, new_c), self.board))
+                        else:
+                            if self.translate[self.board[new_r][new_c][0]] != self.whiteToMove:
+                                moves.append(Move((r, c), (new_r, new_c), self.board))
+                            break
+
+
+    def getBishopMoves(self, r, c, moves):
+        pass
+    def getQueenMoves(self, r, c, moves):
+        pass
+    def getKingMoves(self, r, c, moves):
+        pass
+        
 
 class Move():
     # the ranks are called rows (1-8) , columns are called files(A-H)
@@ -70,3 +150,5 @@ class Move():
     # example : c6 a8 ...
     def getRankFile(self, r, c):
         return self.colsToFiles[c] + self.rowsToRanks[r]
+    
+
