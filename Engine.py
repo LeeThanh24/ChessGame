@@ -14,7 +14,7 @@ queen (Q): con hau
 king (K): con vua 
 """
 from abc import abstractclassmethod
-
+import copy
 class GameState:
     def __init__(self):
         """
@@ -24,42 +24,171 @@ class GameState:
         the remaining is for empty
         """
         self.board = [
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+            ["bR", "--", "--", "--", "bK", "--", "--", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "wR", "--", "--", "--", "bp"],
+            ["--", "--", "bQ", "--", "--", "--", "--", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "--"],
-            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
+            ["wp", "wp", "--", "wp", "wp", "wp", "wp", "--"],
+            ["wR", "--", "--", "--", "wK", "--", "--", "wR"],
         ]
         # To determine white is able to move first
         self.whiteToMove = True
-
+        self.player = 'w' if self.whiteToMove == True else 'b'
         # To capture the movement of each piece
         self.moveLog = []
         self.translate = {'w': True,
-                          'b': False}
+                          'b': False,
+                          '-': None}
         self.moveFunction = {'p' : self.getPawnMoves, 
                              'N': self.getKnightMoves, 
                              'R': self.getRookMoves, 
                              'B': self.getBishopMoves,
                              'Q': self.getQueenMoves,
                              'K': self.getKingMoves}
+        self.kingInfo = {'w': [(7, 4), 0],
+                        'b': [(0, 4), 0]}
+        self.checker = {'w' : [], 'b' : []}
 
+        
     def makeMove(self, move):
         r, c = move.startRow, move.startCol
         r_des, c_des = move.endRow, move.endCol
-        recentPiece = self.board[r][c][1]
-        possibleMoves = [(i.endRow, i.endCol) for i in self.getAllPossibleMoves(recentPiece, r, c)]
-        
-        if (r_des, c_des) in possibleMoves:
-            self.board[move.startRow][move.startCol]="--" #we want to move so leave the square
-            self.board[move.endRow][move.endCol]=move.pieceMoved
-            print(move.getChessNotation())
+        print(r, c,"->",r_des, c_des)
+        piece = self.board[r][c][1]
+        possibleMoves = [(i.endRow, i.endCol) for i in self.getAllPossibleMoves(piece, r, c)]
 
-            self.moveLog.append(move) #log the move in order to  undo if necessary
-            self.whiteToMove=  not self.whiteToMove #swap player
+
+        if (r_des, c_des) in possibleMoves:
+            temp_board = copy.deepcopy(self.board)
+            temp_kingInfo = copy.deepcopy(self.kingInfo)
+
+            if piece == 'K' and self.kingInfo[self.player][-1] == 0:
+                if (r_des, c_des) in [(7, 2), (7, 6), (0, 2), (0, 6)]:
+                    self.castling(r_des, c_des)
+                    return
+                
+            temp_board[r][c] = "--" #we want to move so leave the square
+            temp_board[r_des][c_des] = move.pieceMoved
+
+            if piece == 'K':
+                if self.whiteToMove == True:
+                    temp_kingInfo['w']= [(r_des, c_des), 1]
+                else:
+                    temp_kingInfo['b'] = [(r_des, c_des), 1]
+
+
+            
+            
+            r_K, c_K = temp_kingInfo['w'][0]
+            r_Kb, c_Kb = temp_kingInfo['b'][0]
+            self.checker['w'] = self.Check(r_K, c_K, temp_board)
+            self.checker['b'] = self.Check(r_Kb, c_Kb, temp_board)
+            
+
+            if self.checker[self.player] == []:
+                self.board = copy.deepcopy(temp_board)
+                print(move.getChessNotation())
+                self.kingInfo = copy.deepcopy(temp_kingInfo)
+                self.moveLog.append(move) #log the move in order to  undo if necessary
+                self.whiteToMove = not self.whiteToMove #swap player
+                self.player = 'w' if self.whiteToMove == True else 'b'
+            else:
+                temp_board = copy.deepcopy(self.board)
+
+    def castling(self, r, c):
+        row = 7 if self.player == 'w' else 0
+        temp_board = copy.deepcopy(self.board)
+        rK, cK = self.kingInfo[self.player][0]
+        temp_board[rK][cK] = '--'
+
+        if (r, c) == (row, 2):
+            check_1 = self.Check(row, 2, temp_board)
+            check_2 = self.Check(row, 3, temp_board)
+            if check_1 == [] and check_2 == []:
+                temp_board[row][2] = self.player + 'K'
+                temp_board[row][0] = '--'
+                temp_board[row][3] = self.player + 'R'
+                self.board = copy.deepcopy(temp_board)
+                self.kingInfo[self.player][0] = (row, 2)
+                self.whiteToMove = not self.whiteToMove
+                self.player = 'w' if self.whiteToMove == True else 'b'
+            else:
+                self.temp_board = copy.deepcopy(self.board)
+        else:
+            check_1 = self.Check(row, 5, temp_board)
+            check_2 = self.Check(row, 6, temp_board)
+            if check_1 == [] and check_2 == []:
+                temp_board[row][6] = self.player + 'K'
+                temp_board[row][7] = '--'
+                temp_board[row][5] = self.player + 'R'
+                self.board = copy.deepcopy(temp_board)
+                self.kingInfo[self.player][0] = (row, 6)
+                self.whiteToMove = not self.whiteToMove
+                self.player = 'w' if self.whiteToMove == True else 'b'
+            else:
+                self.temp_board = copy.deepcopy(self.board)
+
+    def en_passant(self, r, c):
+        pass
+
+    def promote(self, r, c):
+        pass
+
+
+
+            
+        
+
+            
+                
+
+#Check
+    def Check(self, r, c, board):
+        directions = [(1, 1), (-1, 1), (-1, -1), (1, -1), 
+                      (0, 1), (1, 0), (-1, 0), (0, -1),
+                      (r+1, c+2), (r+2, c+1), (r-1, c+2), (r+2, c-1), (r-2, c+1), (r+1, c-2), (r-1, c-2), (r-2, c-1)]
+        checker = []
+
+        for idx, dir in enumerate(directions):
+            for step in range(1, 8):
+                if idx < 8:
+                    new_r, new_c = r+dir[0]*step, c+dir[1]*step
+                else:
+                    new_r, new_c = dir[0], dir[1]
+                if 0 <= new_r < 8 and 0 <= new_c < 8:     
+                    if board[new_r][new_c][0] != '-':
+                        if board[new_r][new_c][0] != self.player:
+                            if idx < 4:
+                                if step == 1:
+                                    if self.player == 'w':
+                                        if 0 <= r-1 < 8 and 0 <= c-1 < 8 and 0 <= c+1 < 8: 
+                                            if board[r-1][c+1][1] == 'p' or board[r-1][c-1][1] == 'p':
+                                                checker.append([(r-1, c+1), board[r-1][c-1]])
+                                    else:
+                                        if 0 <= r+1 < 8 and 0 <= c-1 < 8 and 0 <= c+1 < 8: 
+                                            if board[r+1][c+1][1] == 'p' or board[r+1][c-1][1] == 'p':
+                                                checker.append([(r+1, c+1), board[r+1][c-1]])     
+                                
+                                if board[new_r][new_c][1] == 'B' or board[new_r][new_c][1] == 'Q' or (step == 1 and board[new_r][new_c][1] == 'K'):
+                                    checker.append([(new_r, new_c), board[new_r][new_c]])
+                                break
+                            elif 4 <= idx < 8:
+                                if board[new_r][new_c][1] == 'R' or board[new_r][new_c][1] == 'Q' or (step == 1 and board[new_r][new_c][1] == 'K'):
+                                    checker.append([(new_r, new_c), board[new_r][new_c]])
+                                break
+                        else:
+                            break 
+            if 8 <= idx < 16:
+                if 0 <= dir[0] < 8 and 0 <= dir[1] < 8:
+                    if board[dir[0]][dir[1]][0] != '-':
+                        if board[new_r][new_c][0] != board[r][c][0]:
+                            if board[new_r][new_c][1] == 'N':
+                                checker.append([(dir[0], dir[1]), board[dir[0]][dir[1]]])           
+        return checker       
+
+
 
 #Movement of each piece
     def getAllPossibleMoves(self, piece, r, c):
@@ -153,13 +282,25 @@ class GameState:
         if self.whiteToMove == self.translate[self.board[r][c][0]]:
             for dir in directions:
                 new_r, new_c = r+dir[0], c+dir[1]
-                if new_r < 8 and new_c < 8:     
+                if 0 <= new_r < 8 and 0 <= new_c < 8:     
                     if self.board[new_r][new_c][0] == '-':
                         moves.append(Move((r, c), (new_r, new_c), self.board))
                     else:
                         if self.translate[self.board[new_r][new_c][0]] != self.whiteToMove:
                             moves.append(Move((r, c), (new_r, new_c), self.board))
-                        break
+
+            if self.kingInfo[self.player][-1] == 0:
+                row = 7 if self.player == 'w' else 0
+                if self.board[row][2] == '--' and self.board[row][3] == '--' and self.board[row][0][1] == 'R' and self.player == self.board[row][0][0]:
+                    moves.append(Move((r, c), (row, 2), self.board))
+                if self.board[row][5] == '--' and self.board[row][6] == '--' and self.board[row][7][1] == 'R' and self.player == self.board[row][7][0]:
+                    moves.append(Move((r, c), (row, 6), self.board))
+
+
+
+                    
+                     
+                        
         
 
 class Move():

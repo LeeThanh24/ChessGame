@@ -65,6 +65,9 @@ def main():
                     playercClicks.append(sqSelected)  # append for both 1st and 2nd clicks
                 if len(playercClicks) == 2:  # after 2nd click
                     move = Engine.Move(playercClicks[0], playercClicks[1], gs.board)
+                    print("KING INFO: ", gs.kingInfo)
+                    possibleMoves = [(i.endRow, i.endCol) for i in gs.getAllPossibleMoves('K', 0, 4)]
+                    print("KING MOVE ABIlITY: ", possibleMoves)
                     gs.makeMove(move)
                     sqSelected = ()  # reset
                     playercClicks = []  # reset
