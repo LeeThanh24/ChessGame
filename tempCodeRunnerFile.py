@@ -1,1 +1,0 @@
-possibleMoves = [(i.endRow, i.endCol) for i in self.getAllPossibleMoves(piece, r, c)]
