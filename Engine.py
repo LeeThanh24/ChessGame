@@ -87,8 +87,8 @@ class GameState:
 
             #check if KING can castle with ROOK
             if piece.type == 'K' and (r_des, c_des) in [(7, 2), (7, 6), (0, 2), (0, 6)]:
-                if piece.can_castling(r_des, c_des, self.board):
-                    self.castling(piece, r_des, c_des)
+                if piece.can_castling(r_des, c_des, self):
+                    self.castling(r_des, c_des)
                     return
                 
             #check if PAWN can En-passant 
@@ -336,7 +336,7 @@ class Character():
             #check if KING can castle with ROOK
             if self.type == 'K' and self.had_MOVED == 0:
                 if (r_des, c_des) in [(7, 2), (7, 6), (0, 2), (0, 6)]:
-                    if self.can_castling(r_des, c_des, board):
+                    if self.can_castling(r_des, c_des, gs):
                         valid_moves.append(move)
                     
             #check if PAWN can En-passant 
@@ -530,9 +530,10 @@ class King(Character):
         self.name = self.team + 'K'
         self.had_MOVED = 0
 
-    def can_castling(self, r, c, board):
+    def can_castling(self, r, c, gs):
         if self.had_MOVED == 1:
             return 0
+        board = gs.board
         row = 7 if self.team == 'w' else 0
         if (r, c) == (row, 2):
             if board[row][1] != '--' or board[row][2] != '--' or board[row][3] != '--':
@@ -547,15 +548,16 @@ class King(Character):
 
         if (r, c) == (row, 2):
             #check if castling is valid
-            check_1 = GameState.Check(row, 2, temp_board)
-            check_2 = GameState.Check(row, 3, temp_board)
-            check_3 = GameState.Check(row, 4, temp_board)
+            check_1 = GameState.Check(gs, row, 2, temp_board)
+            check_2 = GameState.Check(gs, row, 3, temp_board)
+            check_3 = GameState.Check(gs, row, 4, temp_board)
+            
             if check_1 == [] and check_2 == [] and check_3 == []:
                 return 1
         else:
-            check_1 = GameState.Check(row, 5, temp_board)
-            check_2 = GameState.Check(row, 6, temp_board)
-            check_3 = GameState.Check(row, 4, temp_board)
+            check_1 = GameState.Check(gs, row, 5, temp_board)
+            check_2 = GameState.Check(gs, row, 6, temp_board)
+            check_3 = GameState.Check(gs, row, 4, temp_board)
             if check_1 == [] and check_2 == [] and check_3 == []:
                 return 1
         return 0 
