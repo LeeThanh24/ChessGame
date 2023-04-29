@@ -67,6 +67,9 @@ def main():
                 if len(playercClicks) == 2:  # after 2nd click
                     move = Engine.Move(playercClicks[0], playercClicks[1], gs.board)
                     gs.makeMove(move)
+                    if gs.RESULT() != None:
+                        print(gs.RESULT())
+                        break
                     sqSelected = ()  # reset
                     playercClicks = []  # reset
 
