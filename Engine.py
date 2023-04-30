@@ -35,16 +35,15 @@ class GameState:
                             'b': []}
         self.board = [
             [self.teams['b']['R'][0], self.teams['b']['N'][0], self.teams['b']['B'][0], self.teams['b']['Q'][0], self.teams['b']['K'][0], self.teams['b']['B'][1], self.teams['b']['N'][1], self.teams['b']['R'][1]],
-            [self.teams['b']['p'][0], self.teams['b']['p'][1], self.teams['b']['p'][2], self.teams['b']['p'][3], self.teams['b']['p'][4], "--","--", self.teams['b']['p'][7]],
+            [self.teams['b']['p'][0], self.teams['b']['p'][1], self.teams['b']['p'][2], self.teams['b']['p'][3], self.teams['b']['p'][4], self.teams['b']['p'][5], self.teams['b']['p'][6], self.teams['b']['p'][7]],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", self.teams['b']['p'][5], "--", "--", "--", "--"],
-            ["--", "--", "--", self.teams['b']['p'][6], "--", "--", "--", self.teams['w']['Q'][0]],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             [self.teams['w']['p'][0], self.teams['w']['p'][1], self.teams['w']['p'][2], self.teams['w']['p'][3], self.teams['w']['p'][4], self.teams['w']['p'][5], self.teams['w']['p'][6], self.teams['w']['p'][7]],
-            [self.teams['w']['R'][0], self.teams['w']['N'][0], self.teams['w']['B'][0], "--", self.teams['w']['K'][0], self.teams['w']['B'][1], self.teams['w']['N'][1], self.teams['w']['R'][1]],
+            [self.teams['w']['R'][0], self.teams['w']['N'][0], self.teams['w']['B'][0], self.teams['w']['Q'][0], self.teams['w']['K'][0], self.teams['w']['B'][1], self.teams['w']['N'][1], self.teams['w']['R'][1]],
         ]
-
-
+        #update position
         for r in range(8):
             for c in range(8):
                 if self.board[r][c] != '--':
@@ -56,16 +55,11 @@ class GameState:
         self.player = 'w' if self.whiteToMove == True else 'b'
         # To capture the movement of each piece
         self.moveLog = [None]
-        # just for brief and subtle coding 
-        self.translate = {'w': True,
-                          'b': False,
-                          '-': None}
 
         #Includes all the enemie-pieces that are threatening the respective KING
         self.checker = {'w' : [], 
                         'b' : []}
 
-        
     def makeMove(self, move):
         piece = move.pieceMoved
         piece_captured = move.pieceCaptured
@@ -77,12 +71,10 @@ class GameState:
 
         r, c = move.startRow, move.startCol
         r_des, c_des = move.endRow, move.endCol
-        print(r, c,"->",r_des, c_des)
         
-        #get all possible moves that the piece of interested is capable of doing
+        #get all valid moves that the piece of interested is capable of doing
         valid_Moves = piece.getAllValidMoves(self)
-        print("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV", valid_Moves)
-        print("______________________________________________")
+
         if (r_des, c_des) in valid_Moves:
 
             #check if KING can castle with ROOK
@@ -103,23 +95,24 @@ class GameState:
             if piece.type == 'K':
                 piece.had_MOVED = 1
             
+            #check if PAWN can Promote 
             if piece.type == 'p':
                 if self.player == 'w' and r_des == 0:
                     self.promote(r_des, c_des)
                 elif self.player == 'b' and r_des == 7:
                     self.promote(r_des, c_des)
 
+            #add the piece_captured to achievement list and remove it in enemy team list
             if piece_captured != '--':
                 self.achievement[self.player].append(piece_captured)
                 self.teams[piece_captured.team][piece_captured.type].remove(piece_captured)
             piece.updatePosition((r_des, c_des))
-            print(move.getChessNotation())
+            print(move.pieceMoved.name, move.getChessNotation())
 
             self.moveLog.append(move) #log the move in order to  undo if necessary
 
             self.whiteToMove = not self.whiteToMove #swap player
             self.player = 'w' if self.whiteToMove == True else 'b'
-
 
 
     def castling(self, r, c):
@@ -153,13 +146,16 @@ class GameState:
         piece_captured = self.board[r_des][c_des]
         action = Move((r, c), (r_des, c_des), self.board)
         action.pieceCaptured = self.board[r][c_des]
+
         self.board[r][c] = '--'
         self.board[r_des][c_des] = piece
         self.board[r][c_des] = '--'
+
         self.moveLog.append(action)
         piece.updatePosition((r_des, c_des))
         self.achievement[self.player].append(piece_captured)
         self.teams[piece_captured.team][piece_captured.type].remove(piece_captured)
+
         self.whiteToMove = not self.whiteToMove
         self.player = 'w' if self.whiteToMove == True else 'b'
 
@@ -192,11 +188,6 @@ class GameState:
 
 
 
-            
-            
-
-
-    
 #Check
     def Check(self, r, c, board):
         directions = [(1, 1), (-1, 1), (-1, -1), (1, -1), 
@@ -263,12 +254,12 @@ class GameState:
     
     def RESULT(self):
         if self.End_Game():
-            print('ROI')
+            print('END GAME ROI')
             r_K, c_K = self.teams[self.player]['K'][0].position
             if self.Check(r_K, c_K, self.board) != []:
-                return 'w' if self.player == 'b' else 'w'
+                return 'WHITE WIN' if self.player == 'b' else 'BLACK WIN'
             return 'DRAW'
-        print('CHUA')
+        print('CHUA END GAME')
         return None
 
 
@@ -302,7 +293,6 @@ class Character():
         self.team = team
         self.team_bool = True if self.team == 'w' else False
         self.position = ()
-        self.alive = 1
 
     def create(self):
         self.listCharacter['p'] = [Pawn(self.team) for i in range(8)] 
@@ -328,7 +318,7 @@ class Character():
             possibleMoves = [(i.endRow, i.endCol) for i in self.getAllPossibleMoves(board, lastMove)]
         else:
             possibleMoves = [(i.endRow, i.endCol) for i in self.getAllPossibleMoves(board)]
-        print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", self.type, self.team, possibleMoves)
+
         for move in possibleMoves:
             (r_des, c_des) = move
             temp_board = copy.deepcopy(board)
@@ -351,14 +341,13 @@ class Character():
             if self.type == 'K':
                 r_K, c_K = (r_des, c_des)
             
-
             #make an assumption and see if the move is valid or not
             checker = GameState.Check(gs, r_K, c_K, temp_board)
             
             # If the move is valid, add new move to list
             if checker == []:
                 valid_moves.append(move)
-        print("VALID_MOVES", valid_moves)
+
         return valid_moves
 
     @abstractmethod
