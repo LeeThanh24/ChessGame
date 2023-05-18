@@ -26,12 +26,42 @@ def drawGameState(screen, gs):
     for r in range(DIMENSION):
         for c in range(DIMENSION):
             color = colors[(r + c) % 2]
+
             p.draw.rect(screen, color, p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE))  # draw the rectangle
             piece = gs.board[r][c]
             if (piece != '--'):
                 screen.blit(IMAGES[piece.name], p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
+    rK, cK = gs.teams[gs.player]['K'][0].position
+    if gs.Check(rK, cK, gs.board) != []:
+        s = p.Surface((SQ_SIZE, SQ_SIZE))
+        s.set_alpha(100)
+        s.fill(p.Color("red"))
+        screen.blit(s, (cK * SQ_SIZE, rK * SQ_SIZE))
 
+def highlightSquare(screen, gs, validMoves, squareSelected):
+    if squareSelected != ():
+        r, c = squareSelected
+        # if gs.board[r][c] != '--':
+        #     if gs.board[r][c].team == ('w' if gs.whiteToMove else 'b'):  # squareSelected is piece can be moved
+        # highlight selected square
+        s = p.Surface((SQ_SIZE, SQ_SIZE))
+        s.set_alpha(60)
+        s.fill(p.Color("blue"))
+        screen.blit(s, (c * SQ_SIZE, r * SQ_SIZE))
+        # hightlight the move from that square
+        for move in validMoves:
+            if gs.board[move[0]][move[1]] == '--':
+                screen.blit(s, (move[1] * SQ_SIZE, move[0] * SQ_SIZE))
+            elif gs.board[move[0]][move[1]].team != gs.player:
+                s.set_alpha(100)
+                s.fill(p.Color("orange"))
+                screen.blit(s, (move[1] * SQ_SIZE, move[0] * SQ_SIZE))
+                s.set_alpha(30)
+                s.fill(p.Color("blue"))
+                
+            
+                
 
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
@@ -46,6 +76,8 @@ def main():
     loadImages()  # running this once before while loop
     running = True
 
+    row, col = 0, 0
+    end = 0
     sqSelected = ()  # no square is selected , keep track of the last click of the user (tuple : (row,col))
     playercClicks = []  # keep track of player click (two tuples :[(6,4) , (4,4)])
     # poll for events
@@ -64,20 +96,31 @@ def main():
                 else:
                     sqSelected = (row, col)
                     playercClicks.append(sqSelected)  # append for both 1st and 2nd clicks
-                if len(playercClicks) == 2:  # after 2nd click
-                    move = Engine.Move(playercClicks[0], playercClicks[1], gs.board)
-                    gs.makeMove(move)
-                    if gs.RESULT() != None:
-                        print(gs.RESULT())
-                        break
-                    sqSelected = ()  # reset
-                    playercClicks = []  # reset
+
+
+            if end == 0 and len(playercClicks) == 2:  # after 2nd click
+                move = Engine.Move(playercClicks[0], playercClicks[1], gs.board)
+                gs.makeMove(move)
+                if gs.RESULT() != None:
+                    print(gs.RESULT())
+                    end = 1
+                    break
+                sqSelected = ()  # reset
+                playercClicks = []  # reset
+            
+
 
         # fill the screen with a color to wipe away anything from last frame
         screen.fill(p.Color("white"))
 
         # RENDER YOUR GAME HERE
         drawGameState(screen, gs)
+        
+        if gs.board[row][col] != '--':
+            validMoves = gs.board[row][col].getAllValidMoves(gs)
+            
+            highlightSquare(screen, gs, validMoves, sqSelected)
+
         clock.tick(MAX_FPS)  # update the clock : never run at more than FPS
 
         # flip() the display to put your work on screen

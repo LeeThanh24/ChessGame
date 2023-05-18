@@ -242,7 +242,8 @@ class GameState:
                     if board[dir[0]][dir[1]] != '--':
                         if board[new_r][new_c].team != self.player:
                             if board[new_r][new_c].type == 'N':
-                                checker.append([(dir[0], dir[1]), board[dir[0]][dir[1]]])           
+                                checker.append([(dir[0], dir[1]), board[dir[0]][dir[1]]])
+
         return checker       
 
     def End_Game(self):
@@ -343,7 +344,7 @@ class Character():
             
             #make an assumption and see if the move is valid or not
             checker = GameState.Check(gs, r_K, c_K, temp_board)
-            
+
             # If the move is valid, add new move to list
             if checker == []:
                 valid_moves.append(move)
