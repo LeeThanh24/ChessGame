@@ -3,7 +3,7 @@ and displaying the current GameState object """
 import pygame as p
 import Engine
 
-WIDTH = HEIGHT = 512
+WIDTH = HEIGHT = 720
 DIMENSION = 8
 SQ_SIZE = HEIGHT / DIMENSION  # squre size
 MAX_FPS = 15
