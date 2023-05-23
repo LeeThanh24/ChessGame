@@ -1,5 +1,5 @@
-import pygame, sys
-
+import pygame
+import sys
 import Chess
 from button import Button
 

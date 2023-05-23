@@ -7,7 +7,7 @@ import Engine
 
 p.init()
 clock = pygame.time.Clock()
-
+#565 579
 counter, text =10, '10'.rjust(3)
 tempCounter = counter
 timeTurn = 1 #white : 1 , black :0
@@ -18,12 +18,14 @@ HEIGHT = 720
 DIMENSION = 8
 SQ_SIZE = 75  # square size
 MAX_FPS = 60
+corChessNotation =0
+turnChessNotation = False
 small_font = p.font.Font('freesansbold.ttf', 30)
 medium_font = p.font.Font('freesansbold.ttf', 40)
 big_font = p.font.Font('freesansbold.ttf', 50)
 turn_step = 0
 IMAGES = {}
-
+chessNotation = ""
 '''
 LOAD IMAGE FOR ALL PIECES
 '''
@@ -79,9 +81,11 @@ def drawGameState(screen, gs):
             timeTurn =1
 
 
+    global chessNotation,corChessNotation
+    if chessNotation != 'CHUA END GAME' :
 
-    screen.blit(medium_font.render(" move", True, 'black'), (75*8+10, 0))
-    screen.blit(small_font.render(" Surrender", True, 'black'), (75*8+5, 75*8+30))
+        screen.blit(medium_font.render(chessNotation, True, 'black'), ( 75*8+10,corChessNotation+5))
+    screen.blit(small_font.render(" Surrender", True, 'black'), (75*8+15, 75*8+45))
     # screen.blit(small_font.render(text, True, 'black'), (75*8-200, 75*8+30))
 
 
@@ -140,24 +144,42 @@ def main():
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
+                print ("yes")
+                main()
+                running = False
             elif e.type == p.MOUSEBUTTONDOWN:
+
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
-                col = (int)(location[0] // SQ_SIZE)
-                row = (int)(location[1] // SQ_SIZE)
-                if sqSelected == (row, col):  # the user clicked the same square twice
-                    sqSelected = ()  # deselect
-                    playercClicks = []  # clear player select
+                if location[0] >600 and location[1] >600 :
+                    if gs.whiteToMove == True:
+                        print("white lose")
+                    else:
+                        print("black lose")
+
                 else:
-                    sqSelected = (row, col)
-                    playercClicks.append(sqSelected)  # append for both 1st and 2nd clicks
+                    print(f"mouse position : {location}")
+                    col = (int)(location[0] // SQ_SIZE)
+                    row = (int)(location[1] // SQ_SIZE)
+                    if sqSelected == (row, col):  # the user clicked the same square twice
+                        sqSelected = ()  # deselect
+                        playercClicks = []  # clear player select
+                    else:
+                        sqSelected = (row, col)
+
+                        playercClicks.append(sqSelected)  # append for both 1st and 2nd clicks
 
             if end == 0 and len(playercClicks) == 2:  # after 2nd click
                 move = Engine.Move(playercClicks[0], playercClicks[1], gs.board)
+                global chessNotation
+                chessNotation = move.getChessNotation()
+
                 gs.makeMove(move)
                 if gs.RESULT() != None:
                     print(gs.RESULT())
                     end = 1
                     break
+
                 sqSelected = ()  # reset
                 playercClicks = []  # reset
 
