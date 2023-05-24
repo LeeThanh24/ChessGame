@@ -2,30 +2,35 @@
 and displaying the current GameState object """
 import pygame as p
 import pygame.draw
-
+import time
 import Engine
+import pyautogui
 
+#config
 p.init()
 clock = pygame.time.Clock()
-#565 579
-counter, text =10, '10'.rjust(3)
-tempCounter = counter
-timeTurn = 1 #white : 1 , black :0
 pygame.time.set_timer(pygame.USEREVENT, 1000)
-timeFont = pygame.font.SysFont('Consolas', 30)
 WIDTH = 800
 HEIGHT = 720
 DIMENSION = 8
 SQ_SIZE = 75  # square size
 MAX_FPS = 60
-corChessNotation =0
-turnChessNotation = False
+
+#font
+timeFont = pygame.font.SysFont('Consolas', 30)
 small_font = p.font.Font('freesansbold.ttf', 30)
 medium_font = p.font.Font('freesansbold.ttf', 40)
 big_font = p.font.Font('freesansbold.ttf', 50)
-turn_step = 0
+
+#images
 IMAGES = {}
-chessNotation = ""
+
+#global variable
+counter, text = 10, '10'.rjust(3)
+tempCounter = counter
+timeTurn = 1  # white : 1 , black :0
+gameOver = False
+timerRestart = 5
 '''
 LOAD IMAGE FOR ALL PIECES
 '''
@@ -37,21 +42,23 @@ def loadImages():
         IMAGES[piece] = p.transform.scale(p.image.load("images/" + piece + ".png"), (
             SQ_SIZE, SQ_SIZE))  # Resizes the Surface to a new size, given as (width, height)
 
-def timeCounter (timer ) :
-    x = timer #seconds
+
+def timeCounter(timer):
+    x = timer  # seconds
     seconds = x % 60
     minutes = int(x / 60) % 60
 
     return f"{minutes:02}:{seconds:02}"
 
+
 def drawGameState(screen, gs):
     colors = [p.Color("white"), p.Color("gray")]
-    global counter, text ,timeTurn
+    global counter, text, timeTurn
     counter -= 0.019
 
     text = timeCounter(int(counter)).rjust(3)
-    if (counter ==0) :
-            return
+    if (counter == 0):
+        return
     for r in range(DIMENSION):
         for c in range(DIMENSION):
             color = colors[(r + c) % 2]
@@ -67,26 +74,28 @@ def drawGameState(screen, gs):
             pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, 75 * 8), 2)
         else:
             pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, WIDTH), 2)
-    if text != "00:00" :
-        if timeTurn ==1 :
-            screen.blit(big_font.render(f"White : {text}", True, 'black'), (20, 640))
-        else :
 
-            screen.blit(big_font.render(f"Black : {text}", True, 'black'), (20, 640))
-    else :
+    if text != "00:00":
+        if timeTurn == 1:
+            screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
+        else:
+
+            screen.blit(big_font.render(f"Black turn - {text}", True, 'black'), (20, 640))
+    else:
         counter = tempCounter
-        if timeTurn ==1  :
-            timeTurn =0
-        else :
-            timeTurn =1
+        if timeTurn == 1:
+            timeTurn = 0
+        else:
+            timeTurn = 1
 
+    # global chessNotation,corChessNotation
+    # if chessNotation != 'CHUA END GAME' :
+    #     screen.blit(medium_font.render(chessNotation, True, 'black'), ( 75*8+10,corChessNotation+5))
+    global gameOver
+    if gameOver == True:
+        draw_game_over(screen, gs.whiteToMove)
 
-    global chessNotation,corChessNotation
-    if chessNotation != 'CHUA END GAME' :
-
-        screen.blit(medium_font.render(chessNotation, True, 'black'), ( 75*8+10,corChessNotation+5))
-    screen.blit(small_font.render(" Surrender", True, 'black'), (75*8+15, 75*8+45))
-    # screen.blit(small_font.render(text, True, 'black'), (75*8-200, 75*8+30))
+    screen.blit(small_font.render(" Surrender", True, 'black'), (75 * 8 + 15, 75 * 8 + 45))
 
 
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
@@ -97,6 +106,16 @@ def drawGameState(screen, gs):
         s.set_alpha(100)
         s.fill(p.Color("red"))
         screen.blit(s, (cK * SQ_SIZE, rK * SQ_SIZE))
+
+
+def draw_game_over(screen, winner):
+    pygame.draw.rect(screen, 'black', [200, 200, 440, 80])
+    if winner == True:  # white
+        screen.blit(small_font.render(f'Black won the game!', True, 'white'), (210, 210))
+    else:
+        screen.blit(small_font.render(f'White won the game!', True, 'white'), (210, 210))
+
+    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 240))
 
 
 def highlightSquare(screen, gs, validMoves, squareSelected):
@@ -126,7 +145,7 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 
 def main():
     # pygame setup
-
+    global gameOver
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()  # doc (https://www.pygame.org/docs/ref/time.html)
 
@@ -139,24 +158,21 @@ def main():
     sqSelected = ()  # no square is selected , keep track of the last click of the user (tuple : (row,col))
     playercClicks = []  # keep track of player click (two tuples :[(6,4) , (4,4)])
     # poll for events
+
     while running:
         # pygame.QUIT event means the user clicked X to close your window
         for e in p.event.get():
             if e.type == p.QUIT:
-                running = False
+                p.quit()
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
-                print ("yes")
+
+                gameOver =False
                 main()
-                running = False
             elif e.type == p.MOUSEBUTTONDOWN:
-
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
-                if location[0] >600 and location[1] >600 :
-                    if gs.whiteToMove == True:
-                        print("white lose")
-                    else:
-                        print("black lose")
-
+                if location[0] > 600 and location[1] > 600:
+                    gameOver = True
+                    break
                 else:
                     print(f"mouse position : {location}")
                     col = (int)(location[0] // SQ_SIZE)
