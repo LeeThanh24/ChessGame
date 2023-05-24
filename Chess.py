@@ -6,26 +6,26 @@ import time
 import Engine
 import pyautogui
 
-#config
+# config
 p.init()
 clock = pygame.time.Clock()
 pygame.time.set_timer(pygame.USEREVENT, 1000)
-WIDTH = 800
+WIDTH = 900
 HEIGHT = 720
 DIMENSION = 8
 SQ_SIZE = 75  # square size
 MAX_FPS = 60
 
-#font
+# font
 timeFont = pygame.font.SysFont('Consolas', 30)
 small_font = p.font.Font('freesansbold.ttf', 30)
 medium_font = p.font.Font('freesansbold.ttf', 40)
 big_font = p.font.Font('freesansbold.ttf', 50)
 
-#images
+# images
 IMAGES = {}
 
-#global variable
+# global variable
 counter, text = 10, '10'.rjust(3)
 tempCounter = counter
 timeTurn = 1  # white : 1 , black :0
@@ -49,6 +49,30 @@ def timeCounter(timer):
     minutes = int(x / 60) % 60
 
     return f"{minutes:02}:{seconds:02}"
+
+
+def drawCaptured(screen, gs):
+    try:
+        #print(f"co an {gs.achievement['w'][0].type}")
+        for i in range(len(gs.achievement)):
+            #print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+            temp = str(f"w{gs.achievement['w'][i].type}")
+            screen.blit(IMAGES[temp], p.Rect(600, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        for i in range(len(gs.achievement)):
+            #print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+            temp = str(f"b{gs.achievement['b'][i].type}")
+            screen.blit(IMAGES[temp], p.Rect(750, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        # if len(gs.achievement) >3 :
+        #     for i in range(len(gs.achievement)):
+        #         # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+        #         temp = str(f"w{gs.achievement['w'][i].type}")
+        #         screen.blit(IMAGES[temp], p.Rect(700, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        #     for i in range(len(gs.achievement)):
+        #         # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+        #         temp = str(f"b{gs.achievement['b'][i].type}")
+        #         screen.blit(IMAGES[temp], p.Rect(780, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+    except:
+        pass
 
 
 def drawGameState(screen, gs):
@@ -97,10 +121,14 @@ def drawGameState(screen, gs):
 
     screen.blit(small_font.render(" Surrender", True, 'black'), (75 * 8 + 15, 75 * 8 + 45))
 
-
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
+
+    drawCaptured(screen,gs)
+
+
     rK, cK = gs.teams[gs.player]['K'][0].position
+
     if gs.Check(rK, cK, gs.board) != []:
         s = p.Surface((SQ_SIZE, SQ_SIZE))
         s.set_alpha(100)
@@ -166,7 +194,7 @@ def main():
                 p.quit()
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
 
-                gameOver =False
+                gameOver = False
                 main()
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
@@ -195,6 +223,14 @@ def main():
                     print(gs.RESULT())
                     end = 1
                     break
+
+                drawCaptured(screen, gs)
+                # try :
+                #     print(f"test board[0][0] {gs.achievement['w'][0].type}")
+                #     print(f"size of achivement white {gs.achievement['w'][0]}")
+                #     print(f"size of achivement black {len(gs.achievement['b'])}")
+                # except :
+                #     pass
 
                 sqSelected = ()  # reset
                 playercClicks = []  # reset

@@ -366,6 +366,7 @@ class Pawn(Character):
         self.type = 'p'
         self.name = self.team + 'p'
 
+
     def getAllPossibleMoves(self, board, pre_move):
         r, c = self.position
         moves = []
