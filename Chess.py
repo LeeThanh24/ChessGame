@@ -138,7 +138,7 @@ def drawGameState(screen, gs):
     if gameOver == True:
         draw_game_over(screen, gs.whiteToMove)
 
-    screen.blit(medium_font.render(" Surrender", True, 'black'), (75 * 8 + 41, 75 * 8 + 45))
+    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 50, 75 * 8 + 45))
 
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 

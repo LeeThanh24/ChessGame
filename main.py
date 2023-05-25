@@ -5,7 +5,7 @@ from button import Button
 
 pygame.init()
 
-WIDTH = 800
+WIDTH = 900
 HEIGHT = 720
 
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
