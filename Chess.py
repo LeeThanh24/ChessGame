@@ -4,7 +4,7 @@ import pygame as p
 import pygame.draw
 import time
 import Engine
-import pyautogui
+
 
 # config
 p.init()
@@ -53,24 +53,41 @@ def timeCounter(timer):
 
 def drawCaptured(screen, gs):
     try:
-        #print(f"co an {gs.achievement['w'][0].type}")
-        for i in range(len(gs.achievement)):
-            #print(f"co an w{gs.achievement['w'][i].type}", end=" ")
-            temp = str(f"w{gs.achievement['w'][i].type}")
-            screen.blit(IMAGES[temp], p.Rect(600, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-        for i in range(len(gs.achievement)):
-            #print(f"co an w{gs.achievement['w'][i].type}", end=" ")
-            temp = str(f"b{gs.achievement['b'][i].type}")
-            screen.blit(IMAGES[temp], p.Rect(750, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-        # if len(gs.achievement) >3 :
-        #     for i in range(len(gs.achievement)):
-        #         # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
-        #         temp = str(f"w{gs.achievement['w'][i].type}")
-        #         screen.blit(IMAGES[temp], p.Rect(700, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-        #     for i in range(len(gs.achievement)):
-        #         # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
-        #         temp = str(f"b{gs.achievement['b'][i].type}")
-        #         screen.blit(IMAGES[temp], p.Rect(780, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        # print(f"len of white {len(gs.achievement['w'])}")
+        # print(f"len of black {len(gs.achievement['b'])}")
+        capturedInt = 8
+        if len(gs.achievement['w']) >capturedInt :
+            for i in range(capturedInt):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"b{gs.achievement['w'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(600, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt,len(gs.achievement['w'])):
+                #print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"b{gs.achievement['w'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(700, (i-capturedInt) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        else :
+            for i in range(len(gs.achievement['w'])):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"b{gs.achievement['w'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(600, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+
+
+
+
+        if len(gs.achievement['b']) > capturedInt:
+            for i in range(capturedInt):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"w{gs.achievement['b'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(750, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, len(gs.achievement['b'])):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"w{gs.achievement['b'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(830, (i - capturedInt) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        else:
+            for i in range(len(gs.achievement['b'])):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"w{gs.achievement['b'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(750, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
     except:
         pass
 
