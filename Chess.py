@@ -4,6 +4,7 @@ import pygame as p
 import pygame.draw
 import time
 import Engine
+import pygame_gui
 
 
 # config
@@ -31,6 +32,7 @@ tempCounter = counter
 timeTurn = 1  # white : 1 , black :0
 gameOver = False
 timerRestart = 5
+
 '''
 LOAD IMAGE FOR ALL PIECES
 '''
@@ -136,7 +138,7 @@ def drawGameState(screen, gs):
     if gameOver == True:
         draw_game_over(screen, gs.whiteToMove)
 
-    screen.blit(small_font.render(" Surrender", True, 'black'), (75 * 8 + 15, 75 * 8 + 45))
+    screen.blit(medium_font.render(" Surrender", True, 'black'), (75 * 8 + 41, 75 * 8 + 45))
 
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
@@ -204,6 +206,7 @@ def main():
     playercClicks = []  # keep track of player click (two tuples :[(6,4) , (4,4)])
     # poll for events
 
+    userText = ''
     while running:
         # pygame.QUIT event means the user clicked X to close your window
         for e in p.event.get():
@@ -214,6 +217,7 @@ def main():
                 gameOver = False
                 main()
             elif e.type == p.MOUSEBUTTONDOWN:
+
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
                 if location[0] > 600 and location[1] > 600:
                     gameOver = True
@@ -257,6 +261,7 @@ def main():
 
         # RENDER YOUR GAME HERE
         drawGameState(screen, gs)
+
 
         if gs.board[row][col] != '--':
             validMoves = gs.board[row][col].getAllValidMoves(gs)

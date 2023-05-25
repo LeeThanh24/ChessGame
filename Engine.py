@@ -15,6 +15,27 @@ king (K): con vua
 """
 from abc import abstractmethod
 import copy
+from tkinter import *
+
+def submit():
+    global finalResult
+    finalResult = entry.get()
+    window.destroy()
+
+#config text input box
+finalResult = None
+window = Tk()
+window.title("Promotion")
+window.geometry("+500+400")
+label = Label(window, text="R:Rook, B:Bishop, Knight:N, Queen:Q ")
+label.config(font=("Arial", 30))
+label.grid(row=0, column=0)
+submit = Button(window, text="submit", command=submit)
+submit.grid(row=1, column=1)
+entry = Entry()
+entry.config(font=('Arial', 50))  # change font
+entry.config(width=10)  # width displayed in characters
+entry.grid(row=0, column=1)
 
 
 class GameState:
@@ -164,7 +185,9 @@ class GameState:
         self.player = 'w' if self.whiteToMove == True else 'b'
 
     def promote(self, r, c):
-        option = input("Nhap gi do")
+        window.mainloop()
+
+        option = finalResult
         piece = self.board[r][c]
         if option == 'Q':
             opt = Queen(self.player)
