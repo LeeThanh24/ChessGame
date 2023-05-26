@@ -66,7 +66,7 @@ def drawCaptured(screen, gs):
             for i in range(capturedInt,len(gs.achievement['w'])):
                 #print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(700, (i-capturedInt) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(680, (i-capturedInt) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else :
             for i in range(len(gs.achievement['w'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
@@ -97,9 +97,7 @@ def drawCaptured(screen, gs):
 def drawGameState(screen, gs):
     colors = [p.Color("white"), p.Color("gray")]
     global counter, text, timeTurn
-    counter -= 0.019
 
-    text = timeCounter(int(counter)).rjust(3)
     if (counter == 0):
         return
     for r in range(DIMENSION):
@@ -118,36 +116,33 @@ def drawGameState(screen, gs):
         else:
             pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, WIDTH), 2)
 
-    if text != "00:00":
-        if timeTurn == 1:
-            screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
-        else:
+    # counter -= 0.019
+    # text = timeCounter(int(counter)).rjust(3)
+    # if text != "00:00":
+    #     if timeTurn == 1:
+    #         screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
+    #     else:
+    #         screen.blit(big_font.render(f"Black turn - {text}", True, 'black'), (20, 640))
+    # else:
+    #     counter = tempCounter
+    #     if timeTurn == 1:
+    #         timeTurn = 0
+    #     else:
+    #         timeTurn = 1
 
-            screen.blit(big_font.render(f"Black turn - {text}", True, 'black'), (20, 640))
-    else:
-        counter = tempCounter
-        if timeTurn == 1:
-            timeTurn = 0
-        else:
-            timeTurn = 1
 
-    # global chessNotation,corChessNotation
-    # if chessNotation != 'CHUA END GAME' :
-    #     screen.blit(medium_font.render(chessNotation, True, 'black'), ( 75*8+10,corChessNotation+5))
+    #Surrend
     global gameOver
     if gameOver == True:
         draw_game_over(screen, gs.whiteToMove)
-
     screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 50, 75 * 8 + 45))
-
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
-
+    #captured move
     drawCaptured(screen,gs)
 
 
     rK, cK = gs.teams[gs.player]['K'][0].position
-
     if gs.Check(rK, cK, gs.board) != []:
         s = p.Surface((SQ_SIZE, SQ_SIZE))
         s.set_alpha(100)
@@ -236,8 +231,6 @@ def main():
 
             if end == 0 and len(playercClicks) == 2:  # after 2nd click
                 move = Engine.Move(playercClicks[0], playercClicks[1], gs.board)
-                global chessNotation
-                chessNotation = move.getChessNotation()
 
                 gs.makeMove(move)
                 if gs.RESULT() != None:
@@ -245,14 +238,7 @@ def main():
                     end = 1
                     break
 
-                drawCaptured(screen, gs)
-                # try :
-                #     print(f"test board[0][0] {gs.achievement['w'][0].type}")
-                #     print(f"size of achivement white {gs.achievement['w'][0]}")
-                #     print(f"size of achivement black {len(gs.achievement['b'])}")
-                # except :
-                #     pass
-
+                #drawCaptured(screen, gs)
                 sqSelected = ()  # reset
                 playercClicks = []  # reset
 
