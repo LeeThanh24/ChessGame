@@ -4,6 +4,7 @@ import pygame as p
 import pygame.draw
 import time
 import Engine
+
 import pygame_gui
 
 # config
@@ -25,12 +26,15 @@ big_font = p.font.Font('freesansbold.ttf', 50)
 # images
 IMAGES = {}
 
-
-
-
 '''
 LOAD IMAGE FOR ALL PIECES
 '''
+
+
+def mainMenu():
+    from main import main_menu as menu
+    return menu()
+
 
 
 def loadImages():
@@ -41,11 +45,11 @@ def loadImages():
 
 
 def timeCounter(timer):
-    x = timer  # seconds
+    x = timer
     seconds = x % 60
     minutes = int(x / 60) % 60
-
-    return f"{minutes:02}:{seconds:02}"
+    hours = int(x / 3600)
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
 def drawCaptured(screen, gs):
@@ -96,7 +100,7 @@ def drawTurn(screen, gs):
         else:
             screen.blit(big_font.render(f"Black turn - {text}", True, 'black'), (20, 640))
     else:
-        pygame.time.delay(2000)
+
         countWhite = len(gs.achievement['w'])
         countBlack = len(gs.achievement['b'])
 
@@ -105,23 +109,23 @@ def drawTurn(screen, gs):
             screen.blit(small_font.render(f"Time's up !", True, 'white'), (210, 210))
             screen.blit(small_font.render(f'Black won !', True, 'white'), (210, 250))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 290))
-        elif countWhite > countBlack :
+        elif countWhite > countBlack:
             pygame.draw.rect(screen, 'black', [200, 200, 440, 150])
             screen.blit(small_font.render(f"Time's up !", True, 'white'), (210, 210))
             screen.blit(small_font.render(f'White won !', True, 'white'), (210, 250))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 290))
-        else :
+        else:
             pygame.draw.rect(screen, 'black', [200, 200, 440, 150])
             screen.blit(small_font.render(f"Time's up !", True, 'white'), (210, 210))
             screen.blit(small_font.render(f'Draw !', True, 'white'), (210, 250))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 290))
-
-
+        pygame.time.wait(3000)
         # time.sleep(3)
         # counter, text = 8, '10'.rjust(3)
         #
         # gameOver =True
         # main()
+
 
 def drawGameState(screen, gs):
     colors = [p.Color("white"), p.Color("gray")]
@@ -146,7 +150,7 @@ def drawGameState(screen, gs):
             pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, WIDTH), 2)
 
     # draw turn
-    drawTurn(screen, gs)
+
     # if text != "00:00":
     #     if timeTurn == 1:
     #         screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
@@ -162,10 +166,9 @@ def drawGameState(screen, gs):
     # Surrend
     global gameOver
     if gameOver == True:
-
         draw_game_over(screen, gs.whiteToMove)
-
-
+    else :
+        drawTurn(screen, gs)
     screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 50, 75 * 8 + 45))
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
@@ -181,6 +184,7 @@ def drawGameState(screen, gs):
 
 
 def draw_game_over(screen, winner):
+
     pygame.draw.rect(screen, 'black', [200, 200, 440, 80])
     if winner == True:  # white
         screen.blit(small_font.render(f'Black won the game!', True, 'white'), (210, 210))
@@ -188,7 +192,7 @@ def draw_game_over(screen, winner):
         screen.blit(small_font.render(f'White won the game!', True, 'white'), (210, 210))
 
     screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 240))
-
+    return True
 
 def highlightSquare(screen, gs, validMoves, squareSelected):
     if squareSelected != ():
@@ -215,12 +219,14 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
 
-def main():
+def main(matchTimes = 30*60):
     # pygame setup
     # global variable
-    global gameOver,timeTurn
-    global counter ,text
-    counter, text = 1800, '10'.rjust(3) #overall time of match
+    global gameOver, timeTurn
+    global counter, text
+
+    tempMatchTimes =matchTimes
+    counter, text = matchTimes, '10'.rjust(3)  # overall time of match
     tempCounter = counter
     timeTurn = 1  # white : 1 , black :0
     gameOver = False
@@ -245,9 +251,13 @@ def main():
             if e.type == p.QUIT:
                 p.quit()
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
-
                 gameOver = False
-                main()
+                main(matchTimes=tempMatchTimes)
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:
+                print("return to menu")
+                mainMenu()
+                #tuple[0]
+
             elif e.type == p.MOUSEBUTTONDOWN:
 
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
