@@ -5,7 +5,7 @@ import pygame.draw
 import time
 import Engine
 
-import pygame_gui
+import pygamegui
 
 # config
 p.init()

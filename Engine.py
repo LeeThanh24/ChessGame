@@ -292,7 +292,7 @@ class GameState:
             print('END GAME ROI')
             r_K, c_K = self.teams[self.player]['K'][0].position
             if self.Check(r_K, c_K, self.board) != []:
-                return 'WHITE WIN' if self.player == 'b' else 'BLACK WIN'
+                return 'WHITE WIN' if self.player == 'b' else 'win'
             return 'DRAW'
         print('CHUA END GAME')
         return None
