@@ -136,7 +136,10 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     #play()
                     print(f"time in main.py {overallTime}")
-                    Chess.main(matchTimes=overallTime)
+                    if overallTime !=0 :
+                        Chess.main(matchTimes=overallTime)
+                    else :
+                        Chess.main()
                     return
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
@@ -145,5 +148,5 @@ def main_menu():
                     sys.exit()
 
         pygame.display.update()
-
-main_menu()
+if __name__ == '__main__':
+    main_menu()
