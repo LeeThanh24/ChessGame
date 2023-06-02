@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
-import time
+from python.Service.UsersService import *
+
+
 def foo ():
     from loginForm import main
     return main()
@@ -12,7 +14,7 @@ def main ():
     window.resizable(False, False)
 
 
-    img = PhotoImage(file='images/signUp.png',master= window)
+    img = PhotoImage(file='images/signUp.png', master= window)
     Label(window, image=img,border=0, bg='white').place(x=50, y=90)
 
     frame = Frame(window, width=350, height=390, bg='#fff')
@@ -27,7 +29,7 @@ def main ():
         passw = password.get()
         confPass = confirmPassword .get()
         if passw == confPass:
-
+            register = UsersRepository().insertUser(username= username,password=passw)
             # screen = Tk()
             # screen.title('App')
             # screen.geometry('925x500+500+300')
@@ -36,9 +38,6 @@ def main ():
             messagebox.showinfo('Sign up','Succesfully sign up')
 
             window.withdraw()
-
-            #foo()
-            # screen.mainloop()
 
     def signInCommand():
             window.withdraw()

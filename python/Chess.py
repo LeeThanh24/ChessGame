@@ -2,10 +2,7 @@
 and displaying the current GameState object """
 import pygame as p
 import pygame.draw
-import time
 import Engine
-
-import pygamegui
 
 # config
 p.init()
