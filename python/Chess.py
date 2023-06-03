@@ -8,7 +8,7 @@ import Engine
 p.init()
 clock = pygame.time.Clock()
 pygame.time.set_timer(pygame.USEREVENT, 1000)
-WIDTH = 900
+WIDTH = 1150
 HEIGHT = 720
 DIMENSION = 8
 SQ_SIZE = 75  # square size
@@ -51,9 +51,8 @@ def timeCounter(timer):
 
 def drawCaptured(screen, gs):
     try:
-        # print(f"len of white {len(gs.achievement['w'])}")
-        # print(f"len of black {len(gs.achievement['b'])}")
         capturedInt = 6
+        #BLACK
         if len(gs.achievement['w']) >2* capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
@@ -82,20 +81,34 @@ def drawCaptured(screen, gs):
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, 1, 1))
 
+        # WHITE
+        if len(gs.achievement['b']) > 2*capturedInt:
+            for i in range(capturedInt):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"w{gs.achievement['b'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(840, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, 2*capturedInt):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"w{gs.achievement['b'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(2*capturedInt, len(gs.achievement['b'])):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"w{gs.achievement['b'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(1010, (i - 2*capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         if len(gs.achievement['b']) > capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(750, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            for i in range(capturedInt, len(gs.achievement['b'])):
+                screen.blit(IMAGES[temp], p.Rect(840, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, 2*capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(830, (i - capturedInt) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else:
             for i in range(len(gs.achievement['b'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(750, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(840, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
     except:
         pass
 
@@ -154,10 +167,15 @@ def drawGameState(screen, gs):
 
     for i in range(9):
         if i != 8:
-            pygame.draw.line(screen, 'black', (0, 75 * i), (75 * 8, 75 * i), 2)
-            pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, 75 * 8), 2)
+            if  i ==0 or i ==1 or i ==7:
+                pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (WIDTH, SQ_SIZE * i), 2)  # NGANG
+                pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
+            else :
+                pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (SQ_SIZE * 8, SQ_SIZE * i), 2) #NGANG
+                pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2) #DOC
+
         else:
-            pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, WIDTH), 2)
+            pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
 
     # draw result
     result = gs.RESULT()
