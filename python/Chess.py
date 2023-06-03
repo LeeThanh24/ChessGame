@@ -53,21 +53,34 @@ def drawCaptured(screen, gs):
     try:
         # print(f"len of white {len(gs.achievement['w'])}")
         # print(f"len of black {len(gs.achievement['b'])}")
-        capturedInt = 8
-        if len(gs.achievement['w']) > capturedInt:
+        capturedInt = 6
+        if len(gs.achievement['w']) >2* capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(600, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, 2*capturedInt):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"b{gs.achievement['w'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(2*capturedInt,  len(gs.achievement['w'])):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"b{gs.achievement['w'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(760, (i - 2*capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+        elif len(gs.achievement['w']) > capturedInt:
+            for i in range(capturedInt):
+                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+                temp = str(f"b{gs.achievement['w'][i].type}")
+                screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(capturedInt, len(gs.achievement['w'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else:
             for i in range(len(gs.achievement['w'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(600, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, 1, 1))
 
         if len(gs.achievement['b']) > capturedInt:
             for i in range(capturedInt):
@@ -146,24 +159,17 @@ def drawGameState(screen, gs):
         else:
             pygame.draw.line(screen, 'black', (75 * i, 0), (75 * i, WIDTH), 2)
 
-    # draw turn
-
-    # if text != "00:00":
-    #     if timeTurn == 1:
-    #         screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
-    #     else:
-    #         screen.blit(big_font.render(f"Black turn - {text}", True, 'black'), (20, 640))
-    # else:
-    #     counter = tempCounter
-    #     if timeTurn == 1:
-    #         timeTurn = 0
-    #     else:
-    #         timeTurn = 1
-
+    # draw result
+    result = gs.RESULT()
     # Surrend
     global gameOver
-    if gameOver == True:
-        draw_game_over(screen, gs.whiteToMove)
+    if gameOver == True or result != None :
+        if result != None:
+            pygame.draw.rect(screen, 'black', [200, 200, 440, 80])
+            screen.blit(small_font.render(f'{result}', True, 'white'), (210, 210))
+            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 240))
+        else :
+            draw_game_over(screen, gs.whiteToMove)
     else :
         drawTurn(screen, gs)
     screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 50, 75 * 8 + 45))
@@ -178,6 +184,8 @@ def drawGameState(screen, gs):
         s.set_alpha(100)
         s.fill(p.Color("red"))
         screen.blit(s, (cK * SQ_SIZE, rK * SQ_SIZE))
+
+
 
 
 def draw_game_over(screen, winner):
@@ -278,7 +286,8 @@ def main(matchTimes = 30*60):
 
                 gs.makeMove(move)
                 if gs.RESULT() != None:
-                    print(gs.RESULT())
+                    result = gs.RESULT()
+                    print(result)
                     end = 1
                     break
 
