@@ -1,6 +1,6 @@
 from tkinter import *
 import signUpForm
-import main
+from python import main
 from python.Service.UsersService import *
 from tkinter import messagebox
 
@@ -32,11 +32,13 @@ def loginForm():
         username2 = user2.get()
         passw2 = password2.get()
         print(f"{username} - {passw},{username2}- {passw2}")
+        score1= UsersService().findScoreByUsername(username)
+        score2= UsersService().findScoreByUsername(username2)
         usersService = UsersService()
         if usersService.checkLogin(username, passw) and usersService.checkLogin(username2,
                                                                                 passw2) and username != username2:
             root.destroy()
-            main.main_menu()
+            main.main_menu(username, username2,score1,score2)
         else:
             messagebox.showinfo("Login", "Login failed !")
 
@@ -88,7 +90,7 @@ def loginForm():
         if name == '':
             password.insert(0, 'Password')
 
-    password = Entry(frame, width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
+    password = Entry(frame, show="*", width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
     password.place(x=30, y=150)
     password.insert(0, 'Password')
     password.bind('<FocusIn>', onEnter)
@@ -105,7 +107,7 @@ def loginForm():
         if name2 == '':
             password2.insert(0, 'Password')
 
-    password2 = Entry(frame2, width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
+    password2 = Entry(frame2, show="*", width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
     password2.place(x=30, y=150)
     password2.insert(0, 'Password')
     password2.bind('<FocusIn>', onEnter2)

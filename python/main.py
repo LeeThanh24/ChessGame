@@ -49,7 +49,7 @@ def play():
 
         pygame.display.update()
     
-def options():
+def options(user1= 'user 1',user2= 'user 2',score1=0,score2=0):
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
         backgroundOption = pygame.image.load("images/optionBackground.jpg")
@@ -86,7 +86,7 @@ def options():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
+                    main_menu(user1=user1,user2=user2,score1=score1,score2=score2)
                 if OPTIONS_30M.checkForInput(OPTIONS_MOUSE_POS):
                     #matchTimes(30*60)
                     overallTime = 30*60
@@ -105,8 +105,10 @@ def options():
 
         pygame.display.update()
 
-def main_menu():
+def main_menu(user1 = 'user 1', user2 = 'user 2',score1= 0, score2= 0 ):
     initMenu()
+    print(f"user 1 {user1} - score1 {score1}")
+    print(f"user 2 {user2} - score2 {score2}")
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -136,13 +138,14 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     #play()
                     print(f"time in main.py {overallTime}")
+
                     if overallTime !=0 :
-                        Chess.main(matchTimes=overallTime)
+                        Chess.main(matchTimes=overallTime, user1 =user1, user2=user2,score1=score1,score2=score2)
                     else :
-                        Chess.main()
+                        Chess.main(user1 =user1, user2=user2,score1=score1,score2=score2)
                     return
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
+                    options(user1=user1,user2=user2,score1=score1,score2=score2)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()

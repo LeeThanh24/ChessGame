@@ -28,9 +28,9 @@ LOAD IMAGE FOR ALL PIECES
 '''
 
 
-def mainMenu():
+def mainMenu(user1 ='user 1',user2 = 'user 2',score1=0,score2=0):
     from main import main_menu as menu
-    return menu()
+    return menu(user1=user1,user2=user2,score1=score1,score2=score2)
 
 
 
@@ -117,7 +117,8 @@ def drawTurn(screen, gs):
     global counter
     counter -= 0.019
     text = timeCounter(int(counter)).rjust(3)
-    if text != "00:00":
+    #print (f"text : {text}")
+    if text != "00:00:00":
         if gs.whiteToMove == True:
             screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
         else:
@@ -128,20 +129,20 @@ def drawTurn(screen, gs):
         countBlack = len(gs.achievement['b'])
 
         if countWhite < countBlack:
-            pygame.draw.rect(screen, 'black', [200, 200, 440, 150])
-            screen.blit(small_font.render(f"Time's up !", True, 'white'), (210, 210))
-            screen.blit(small_font.render(f'Black won !', True, 'white'), (210, 250))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 290))
+            pygame.draw.rect(screen, 'black', [400,300, 440, 150])
+            screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+            screen.blit(small_font.render(f'Black won !', True, 'white'), (410, 350))
+            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
         elif countWhite > countBlack:
-            pygame.draw.rect(screen, 'black', [200, 200, 440, 150])
-            screen.blit(small_font.render(f"Time's up !", True, 'white'), (210, 210))
-            screen.blit(small_font.render(f'White won !', True, 'white'), (210, 250))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 290))
+            pygame.draw.rect(screen, 'black', [400,300, 440, 150])
+            screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+            screen.blit(small_font.render(f'White won !', True, 'white'), (410, 350))
+            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
         else:
-            pygame.draw.rect(screen, 'black', [200, 200, 440, 150])
-            screen.blit(small_font.render(f"Time's up !", True, 'white'), (210, 210))
-            screen.blit(small_font.render(f'Draw !', True, 'white'), (210, 250))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 290))
+            pygame.draw.rect(screen, 'black', [400,300, 440, 150])
+            screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+            screen.blit(small_font.render(f'Draw !', True, 'white'), (410, 350))
+            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
         pygame.time.wait(3000)
         # time.sleep(3)
         # counter, text = 8, '10'.rjust(3)
@@ -150,7 +151,7 @@ def drawTurn(screen, gs):
         # main()
 
 
-def drawGameState(screen, gs):
+def drawGameState(screen, gs,user1='user 1',user2= 'user 2',score1=0,score2=0):
     colors = [p.Color("white"), p.Color("gray")]
     global counter, text, timeTurn
 
@@ -177,25 +178,40 @@ def drawGameState(screen, gs):
         else:
             pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
 
-    # draw result
+    # result
     result = gs.RESULT()
+
     # Surrend
     global gameOver
     if gameOver == True or result != None :
         if result != None:
-            pygame.draw.rect(screen, 'black', [200, 200, 440, 80])
-            screen.blit(small_font.render(f'{result}', True, 'white'), (210, 210))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 240))
+            pygame.draw.rect(screen, 'black', [400,300, 440, 80])
+            screen.blit(small_font.render(f'{result}', True, 'white'), (410, 310))
+            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 340))
         else :
             draw_game_over(screen, gs.whiteToMove)
     else :
         drawTurn(screen, gs)
-    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 50, 75 * 8 + 45))
+    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 180, 75 * 8 + 45))
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
     # captured move
     drawCaptured(screen, gs)
 
+    #draw user
+    pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE*8, SQ_SIZE])
+    pygame.draw.rect(screen, 'black', [602, 1, SQ_SIZE*8, SQ_SIZE])
+    screen.blit(small_font.render(f'{user2} - Score: {score2}', True, 'white'), (780, 550))
+    screen.blit(small_font.render(f'{user1} - Score: {score1}', True, 'white'), (780, 25))
+
+    #load avatar
+    ava1 = p.image.load("images/avaWhite1.jpg")
+    ava1 = p.transform.scale(ava1, (SQ_SIZE-4, SQ_SIZE-4))
+    screen.blit(ava1, (620, 528))
+
+    ava2 = p.image.load("images/avaWhite1.jpg")
+    ava2 = p.transform.scale(ava2, (SQ_SIZE-4, SQ_SIZE-4))
+    screen.blit(ava2, (620, 3))
     rK, cK = gs.teams[gs.player]['K'][0].position
     if gs.Check(rK, cK, gs.board) != []:
         s = p.Surface((SQ_SIZE, SQ_SIZE))
@@ -208,13 +224,13 @@ def drawGameState(screen, gs):
 
 def draw_game_over(screen, winner):
 
-    pygame.draw.rect(screen, 'black', [200, 200, 440, 80])
+    pygame.draw.rect(screen, 'black', [400,300, 440, 80])
     if winner == True:  # white
-        screen.blit(small_font.render(f'Black won the game!', True, 'white'), (210, 210))
+        screen.blit(small_font.render(f'Black won the game!', True, 'white'), (410, 310))
     else:
-        screen.blit(small_font.render(f'White won the game!', True, 'white'), (210, 210))
+        screen.blit(small_font.render(f'White won the game!', True, 'white'), (410, 310))
 
-    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (210, 240))
+    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410,340))
     return True
 
 def highlightSquare(screen, gs, validMoves, squareSelected):
@@ -242,7 +258,7 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
 
-def main(matchTimes = 30*60):
+def main(matchTimes = 30*60,user1 ='user 1',user2= 'user 2',score1 = 0 ,score2 = 0 ):
     # pygame setup
     # global variable
     global gameOver, timeTurn
@@ -275,10 +291,10 @@ def main(matchTimes = 30*60):
                 p.quit()
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
                 gameOver = False
-                main(matchTimes=tempMatchTimes)
+                main(matchTimes=tempMatchTimes,user1=user1,user2= user2,score1=score1,score2=score2)
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:
                 print("return to menu")
-                mainMenu()
+                mainMenu(user1=user1,user2= user2,score1=score1,score2=score2)
                 #tuple[0]
 
             elif e.type == p.MOUSEBUTTONDOWN:
@@ -317,7 +333,7 @@ def main(matchTimes = 30*60):
         screen.fill(p.Color("gray"))
 
         # RENDER YOUR GAME HERE
-        drawGameState(screen, gs)
+        drawGameState(screen, gs,user1,user2,score1,score2)
 
         if gs.board[row][col] != '--':
             validMoves = gs.board[row][col].getAllValidMoves(gs)

@@ -31,3 +31,11 @@ class UsersRepository:
             return True
         except:
             return False
+
+    def findScoreByUsername(self,username ):
+        users = self.getAllUsers()
+        for user in users :
+            if user.username==username :
+                return user.score
+        return 0
+
