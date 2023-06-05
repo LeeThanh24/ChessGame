@@ -18,3 +18,12 @@ class UsersService:
     def findScoreByUsername(self,username ):
 
         return UsersRepository().findScoreByUsername(username)
+
+
+    def updateScoreByUsername (self,username ,additiveScore ) :
+
+        currScore = UsersRepository().getScoreByUsername(username)
+        #print(f"currScore  : {currScore}")
+        newScore = currScore+ additiveScore
+
+        return UsersRepository().updateScoreByUsername(username,newScore)

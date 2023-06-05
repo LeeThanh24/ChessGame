@@ -3,11 +3,11 @@ and displaying the current GameState object """
 import pygame as p
 import pygame.draw
 import Engine
+from python.Service.UsersService import *
 
 # config
 p.init()
 clock = pygame.time.Clock()
-pygame.time.set_timer(pygame.USEREVENT, 1000)
 WIDTH = 1150
 HEIGHT = 720
 DIMENSION = 8
@@ -28,10 +28,9 @@ LOAD IMAGE FOR ALL PIECES
 '''
 
 
-def mainMenu(user1 ='user 1',user2 = 'user 2',score1=0,score2=0):
+def mainMenu(user1='user 1', user2='user 2', score1=0, score2=0):
     from main import main_menu as menu
-    return menu(user1=user1,user2=user2,score1=score1,score2=score2)
-
+    return menu(user1=user1, user2=user2, score1=score1, score2=score2)
 
 
 def loadImages():
@@ -52,72 +51,72 @@ def timeCounter(timer):
 def drawCaptured(screen, gs):
     try:
         capturedInt = 6
-        #BLACK
-        if len(gs.achievement['w']) >2* capturedInt:
+        # BLACK
+        if len(gs.achievement['w']) > 2 * capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            for i in range(capturedInt, 2*capturedInt):
+                screen.blit(IMAGES[temp], p.Rect(600, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, 2 * capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            for i in range(2*capturedInt,  len(gs.achievement['w'])):
+                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(2 * capturedInt, len(gs.achievement['w'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(760, (i - 2*capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(760, (i - 2 * capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         elif len(gs.achievement['w']) > capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(600, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(capturedInt, len(gs.achievement['w'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else:
             for i in range(len(gs.achievement['w'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(600, (i+1) * SQ_SIZE, 1, 1))
+                screen.blit(IMAGES[temp], p.Rect(600, (i + 1) * SQ_SIZE, 1, 1))
 
         # WHITE
-        if len(gs.achievement['b']) > 2*capturedInt:
+        if len(gs.achievement['b']) > 2 * capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(840, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            for i in range(capturedInt, 2*capturedInt):
+                screen.blit(IMAGES[temp], p.Rect(840, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, 2 * capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            for i in range(2*capturedInt, len(gs.achievement['b'])):
+                screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(2 * capturedInt, len(gs.achievement['b'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(1010, (i - 2*capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(1010, (i - 2 * capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         if len(gs.achievement['b']) > capturedInt:
             for i in range(capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(840, (i+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            for i in range(capturedInt, 2*capturedInt):
+                screen.blit(IMAGES[temp], p.Rect(840, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            for i in range(capturedInt, 2 * capturedInt):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt+1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else:
             for i in range(len(gs.achievement['b'])):
                 # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"w{gs.achievement['b'][i].type}")
-                screen.blit(IMAGES[temp], p.Rect(840, i * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[temp], p.Rect(840, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
     except:
         pass
 
 
-def drawTurn(screen, gs):
+def drawTurn(screen, gs, user1, user2):
     global counter
     counter -= 0.019
     text = timeCounter(int(counter)).rjust(3)
-    #print (f"text : {text}")
+    # print (f"text : {text}")
     if text != "00:00:00":
         if gs.whiteToMove == True:
             screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
@@ -129,17 +128,19 @@ def drawTurn(screen, gs):
         countBlack = len(gs.achievement['b'])
 
         if countWhite < countBlack:
-            pygame.draw.rect(screen, 'black', [400,300, 440, 150])
+            pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
             screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
             screen.blit(small_font.render(f'Black won !', True, 'white'), (410, 350))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
+            UsersService().updateScoreByUsername(user1, 1)
         elif countWhite > countBlack:
-            pygame.draw.rect(screen, 'black', [400,300, 440, 150])
+            pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
             screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
             screen.blit(small_font.render(f'White won !', True, 'white'), (410, 350))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
+            UsersService().updateScoreByUsername(user2, 1)
         else:
-            pygame.draw.rect(screen, 'black', [400,300, 440, 150])
+            pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
             screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
             screen.blit(small_font.render(f'Draw !', True, 'white'), (410, 350))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
@@ -151,7 +152,7 @@ def drawTurn(screen, gs):
         # main()
 
 
-def drawGameState(screen, gs,user1='user 1',user2= 'user 2',score1=0,score2=0):
+def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0):
     colors = [p.Color("white"), p.Color("gray")]
     global counter, text, timeTurn
 
@@ -168,50 +169,62 @@ def drawGameState(screen, gs,user1='user 1',user2= 'user 2',score1=0,score2=0):
 
     for i in range(9):
         if i != 8:
-            if  i ==0 or i ==1 or i ==7:
+            if i == 0 or i == 1 or i == 7:
                 pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (WIDTH, SQ_SIZE * i), 2)  # NGANG
                 pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
-            else :
-                pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (SQ_SIZE * 8, SQ_SIZE * i), 2) #NGANG
-                pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2) #DOC
+            else:
+                pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (SQ_SIZE * 8, SQ_SIZE * i), 2)  # NGANG
+                pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
 
         else:
             pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
+
+    # draw user
+    # pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE*8, SQ_SIZE])
+    # pygame.draw.rect(screen, 'black', [602, 1, SQ_SIZE*8, SQ_SIZE])
+    screen.blit(small_font.render(f'{user2} - Score: {score2}', True, 'black'), (740, 550))
+    screen.blit(small_font.render(f'{user1} - Score: {score1}', True, 'black'), (740, 25))
+
+    # load avatar
+    ava1 = p.image.load("images/avaWhite1.jpg")
+    ava1 = p.transform.scale(ava1, (SQ_SIZE - 4, SQ_SIZE - 4))
+    screen.blit(ava1, (620, 528))
+
+    ava2 = p.image.load("images/avaWhite1.jpg")
+    ava2 = p.transform.scale(ava2, (SQ_SIZE - 4, SQ_SIZE - 4))
+    screen.blit(ava2, (620, 3))
 
     # result
     result = gs.RESULT()
 
     # Surrend
-    global gameOver
-    if gameOver == True or result != None :
+    global gameOver, turnResult,updated
+    if gameOver == True or result != None:
         if result != None:
-            pygame.draw.rect(screen, 'black', [400,300, 440, 80])
+            pygame.draw.rect(screen, 'black', [400, 300, 440, 80])
             screen.blit(small_font.render(f'{result}', True, 'white'), (410, 310))
+            if result == 'WHITE WIN':
+                if turnResult == True:
+                    UsersService().updateScoreByUsername(user2, 1)
+            elif result == 'BLACK WIN':
+                if turnResult == True:
+                    UsersService().updateScoreByUsername(user1, 1)
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 340))
-        else :
-            draw_game_over(screen, gs.whiteToMove)
-    else :
-        drawTurn(screen, gs)
+            turnResult = False
+        else:
+
+            draw_game_over(screen, gs.whiteToMove, user1, user2)
+
+    else:
+        drawTurn(screen, gs, user1, user2)
+
     screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 180, 75 * 8 + 45))
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
     # captured move
     drawCaptured(screen, gs)
 
-    #draw user
-    pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE*8, SQ_SIZE])
-    pygame.draw.rect(screen, 'black', [602, 1, SQ_SIZE*8, SQ_SIZE])
-    screen.blit(small_font.render(f'{user2} - Score: {score2}', True, 'white'), (780, 550))
-    screen.blit(small_font.render(f'{user1} - Score: {score1}', True, 'white'), (780, 25))
-
-    #load avatar
-    ava1 = p.image.load("images/avaWhite1.jpg")
-    ava1 = p.transform.scale(ava1, (SQ_SIZE-4, SQ_SIZE-4))
-    screen.blit(ava1, (620, 528))
-
-    ava2 = p.image.load("images/avaWhite1.jpg")
-    ava2 = p.transform.scale(ava2, (SQ_SIZE-4, SQ_SIZE-4))
-    screen.blit(ava2, (620, 3))
+    # warning checkamte
     rK, cK = gs.teams[gs.player]['K'][0].position
     if gs.Check(rK, cK, gs.board) != []:
         s = p.Surface((SQ_SIZE, SQ_SIZE))
@@ -220,18 +233,25 @@ def drawGameState(screen, gs,user1='user 1',user2= 'user 2',score1=0,score2=0):
         screen.blit(s, (cK * SQ_SIZE, rK * SQ_SIZE))
 
 
+def draw_game_over(screen, winner, user1='user 1', user2='user 2'):
+    global gameOver ,updated
 
-
-def draw_game_over(screen, winner):
-
-    pygame.draw.rect(screen, 'black', [400,300, 440, 80])
+    print(f"test surrender ")
+    pygame.draw.rect(screen, 'black', [400, 300, 440, 80])
     if winner == True:  # white
         screen.blit(small_font.render(f'Black won the game!', True, 'white'), (410, 310))
+        if updated == False:
+            UsersService().updateScoreByUsername(user1, 1)
     else:
         screen.blit(small_font.render(f'White won the game!', True, 'white'), (410, 310))
+        if updated == False:
+            UsersService().updateScoreByUsername(user2, 1)
+    updated =True
+    #gameOver = False
+    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 340))
 
-    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410,340))
     return True
+
 
 def highlightSquare(screen, gs, validMoves, squareSelected):
     if squareSelected != ():
@@ -258,13 +278,16 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
 
-def main(matchTimes = 30*60,user1 ='user 1',user2= 'user 2',score1 = 0 ,score2 = 0 ):
+def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
     # pygame setup
     # global variable
     global gameOver, timeTurn
     global counter, text
-
-    tempMatchTimes =matchTimes
+    global turnResult , updated
+    score1 = UsersService().findScoreByUsername(user1)
+    score2 = UsersService().findScoreByUsername(user2)
+    turnResult = False
+    tempMatchTimes = matchTimes
     counter, text = matchTimes, '10'.rjust(3)  # overall time of match
     tempCounter = counter
     timeTurn = 1  # white : 1 , black :0
@@ -289,18 +312,19 @@ def main(matchTimes = 30*60,user1 ='user 1',user2= 'user 2',score1 = 0 ,score2 =
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
-            elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:  # Enter button
                 gameOver = False
-                main(matchTimes=tempMatchTimes,user1=user1,user2= user2,score1=score1,score2=score2)
-            elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:
+                main(matchTimes=tempMatchTimes, user1=user1, user2=user2, score1=score1, score2=score2)
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:  # P button
                 print("return to menu")
-                mainMenu(user1=user1,user2= user2,score1=score1,score2=score2)
-                #tuple[0]
+                mainMenu(user1=user1, user2=user2, score1=score1, score2=score2)
+                # tuple[0]
 
             elif e.type == p.MOUSEBUTTONDOWN:
 
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
-                if location[0] > 600 and location[1] > 600:
+                if location[0] > 600 and location[1] > 600:  # surrend button
+                    updated = False
                     gameOver = True
                     break
                 else:
@@ -322,6 +346,7 @@ def main(matchTimes = 30*60,user1 ='user 1',user2= 'user 2',score1 = 0 ,score2 =
                 if gs.RESULT() != None:
                     result = gs.RESULT()
                     print(result)
+                    turnResult = True
                     end = 1
                     break
 
@@ -333,7 +358,7 @@ def main(matchTimes = 30*60,user1 ='user 1',user2= 'user 2',score1 = 0 ,score2 =
         screen.fill(p.Color("gray"))
 
         # RENDER YOUR GAME HERE
-        drawGameState(screen, gs,user1,user2,score1,score2)
+        drawGameState(screen, gs, user1, user2, score1, score2)
 
         if gs.board[row][col] != '--':
             validMoves = gs.board[row][col].getAllValidMoves(gs)

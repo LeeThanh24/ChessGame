@@ -32,10 +32,36 @@ class UsersRepository:
         except:
             return False
 
-    def findScoreByUsername(self,username ):
+    def findScoreByUsername(self, username):
         users = self.getAllUsers()
-        for user in users :
-            if user.username==username :
+        for user in users:
+            if user.username == username:
                 return user.score
         return 0
+
+    def updateScoreByUsername(self, username, score):
+        try:
+            #print("co vo day")
+
+            query = f"update users set score = %s where username = %s"
+            cursor = self.connection.getCursor()
+            val = (score, username)
+            cursor.execute(query,val)
+            self.connection.db.commit()
+            return True
+        except :
+            return False
+
+    def getScoreByUsername(self,username ):
+        try :
+            cursor = self.connection.getCursor()
+            query = "select score from users where username = %s"
+            val = username
+            cursor.execute(query,(val,))
+
+            result = cursor.fetchone()
+
+            return result[0]
+        except :
+            return -1
 
