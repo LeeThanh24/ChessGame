@@ -19,8 +19,8 @@ MAX_FPS = 60
 # font
 timeFont = pygame.font.SysFont('Consolas', 30)
 small_font = p.font.Font('freesansbold.ttf', 30)
-medium_font = p.font.Font('freesansbold.ttf', 40)
-big_font = p.font.Font('freesansbold.ttf', 50)
+medium_font = p.font.Font('freesansbold.ttf', 36)
+big_font = p.font.Font('freesansbold.ttf', 60)
 
 # images
 IMAGES = {}
@@ -48,6 +48,14 @@ def timeCounter(timer):
     minutes = int(x / 60) % 60
     hours = int(x / 3600)
     return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+
+def eachTimeCounter(timer):
+    x = timer
+    seconds = x % 60
+    minutes = int(x / 60) % 60
+
+    return f"{minutes:02}:{seconds:02}"
 
 
 def drawCaptured(screen, gs):
@@ -115,15 +123,45 @@ def drawCaptured(screen, gs):
 
 
 def drawTurn(screen, gs, user1, user2):
-    global counter
+    global counter, count, playerTime, previousPlayer
+
     counter -= 0.019
+    playerTime -= 0.019
     text = timeCounter(int(counter)).rjust(3)
+    playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+
+    if gs.whiteToMove == False and previousPlayer == 'w':  # from white to black
+        playerTime = 15
+        playerTime -= 0.019
+        playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+
+    if gs.whiteToMove == True and previousPlayer == 'b':  # from black to white
+        playerTime = 15
+        playerTime -= 0.019
+        playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+
     # print (f"text : {text}")
     if text != "00:00:00":
-        if gs.whiteToMove == True:
-            screen.blit(big_font.render(f"White turn - {text}", True, 'black'), (20, 640))
+        if gs.whiteToMove == True:  # WHITE
+            if playerTimeText != '00:00':
+                previousPlayer = 'w'
+                screen.blit(medium_font.render(f"White turn - {playerTimeText}", True, 'black'), (20, 650))
+                screen.blit(big_font.render(f"{text}", True, 'black'), (480, 640))
+            else:
+                gs.player = 'b'
+                gs.whiteToMove = False
+
+            #     gs.whiteToMove = False
         else:
-            screen.blit(big_font.render(f"Black turn - {text}", True, 'black'), (20, 640))
+            if playerTimeText != '00:00':  # BLACK
+                previousPlayer = 'b'
+                screen.blit(medium_font.render(f"Black turn - {playerTimeText}", True, 'black'), (20, 650))
+                screen.blit(big_font.render(f"{text}", True, 'black'), (480, 640))
+            else:
+                gs.player = 'w'
+                gs.whiteToMove = True
+
+
     else:
 
         countWhite = len(gs.achievement['w'])
@@ -147,11 +185,6 @@ def drawTurn(screen, gs, user1, user2):
             screen.blit(small_font.render(f'Draw !', True, 'white'), (410, 350))
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
         pygame.time.wait(3000)
-        # time.sleep(3)
-        # counter, text = 8, '10'.rjust(3)
-        #
-        # gameOver =True
-        # main()
 
 
 def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0):
@@ -170,16 +203,17 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
                 screen.blit(IMAGES[piece.name], p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
     for i in range(9):
-        if i != 8:
-            if i == 0 or i == 1 or i == 7:
-                pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (WIDTH, SQ_SIZE * i), 2)  # NGANG
-                pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
-            else:
-                pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (SQ_SIZE * 8, SQ_SIZE * i), 2)  # NGANG
-                pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
-
+        # if i != 8:
+        if i == 0 or i == 1 or i == 7:
+            pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (WIDTH, SQ_SIZE * i), 2)  # NGANG
+            pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
         else:
-            pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
+            pygame.draw.line(screen, 'black', (0, SQ_SIZE * i), (SQ_SIZE * 8, SQ_SIZE * i), 2)  # NGANG
+            pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
+    # else:
+    #     pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
+    pygame.draw.line(screen, 'black', (SQ_SIZE * 5 + 10, SQ_SIZE * 8), (SQ_SIZE * 5 + 10, WIDTH), 4)  # DOC
+    pygame.draw.line(screen, 'black', (SQ_SIZE * 5 + 450, SQ_SIZE * 8), (SQ_SIZE * 5 + 450, WIDTH), 4)  # DOC
 
     # draw user
     pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE * 8, SQ_SIZE])
@@ -207,7 +241,6 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
 
             if result == 'WHITE WIN':
                 if turnResult == True:
-
                     UsersService().updateScoreByUsername(user2, 1)
                     name = user1 + " LOSE " + user2
 
@@ -226,7 +259,7 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
                     current_datetime = datetime.now()
                     # Format the date and time as a string
                     matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
-                    MatchesService().insertMatch(name,matchTime)
+                    MatchesService().insertMatch(name, matchTime)
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 340))
             turnResult = False
         else:
@@ -235,7 +268,7 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
     else:
         drawTurn(screen, gs, user1, user2)
 
-    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 180, 75 * 8 + 45))
+    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 300, 75 * 8 + 45))
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
     # captured move
@@ -253,7 +286,7 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
 def draw_game_over(screen, winner, user1='user 1', user2='user 2'):
     global gameOver, updated
 
-    #print(f"test surrender ")
+    # print(f"test surrender ")
     pygame.draw.rect(screen, 'black', [400, 300, 440, 80])
     if winner == True:  # white
         screen.blit(small_font.render(f'{user1} WON the game!', True, 'white'), (410, 310))
@@ -288,8 +321,7 @@ def draw_game_over(screen, winner, user1='user 1', user2='user 2'):
 def highlightSquare(screen, gs, validMoves, squareSelected):
     if squareSelected != ():
         r, c = squareSelected
-        # if gs.board[r][c] != '--':
-        #     if gs.board[r][c].team == ('w' if gs.whiteToMove else 'b'):  # squareSelected is piece can be moved
+
         # highlight selected square
         s = p.Surface((SQ_SIZE, SQ_SIZE))
         s.set_alpha(60)
@@ -313,7 +345,7 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
     # pygame setup
     # global variable
-    global gameOver, timeTurn
+    global gameOver, timeTurn, playerTime, previousPlayer
     global counter, text
     global turnResult, updated
     score1 = UsersService().findScoreByUsername(user1)
@@ -321,9 +353,10 @@ def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0)
     turnResult = False
     tempMatchTimes = matchTimes
     counter, text = matchTimes, '10'.rjust(3)  # overall time of match
-    tempCounter = counter
+    playerTime = 15
     timeTurn = 1  # white : 1 , black :0
     gameOver = False
+    previousPlayer = 'w'
 
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()  # doc (https://www.pygame.org/docs/ref/time.html)
@@ -355,9 +388,10 @@ def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0)
             elif e.type == p.MOUSEBUTTONDOWN:
 
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
-                if location[0] > 600 and location[1] > 600:  # surrend button
+                if location[0] > 825 and location[1] > 600:  # surrend button
                     updated = False
                     gameOver = True
+                    # (825, 600)
                     break
                 else:
                     print(f"mouse position : {location}")
