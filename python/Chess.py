@@ -3,7 +3,9 @@ and displaying the current GameState object """
 import pygame as p
 import pygame.draw
 import Engine
+from python.Service.MatchesService import MatchesService
 from python.Service.UsersService import *
+from datetime import datetime
 
 # config
 p.init()
@@ -180,10 +182,10 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
             pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
 
     # draw user
-    # pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE*8, SQ_SIZE])
-    # pygame.draw.rect(screen, 'black', [602, 1, SQ_SIZE*8, SQ_SIZE])
-    screen.blit(small_font.render(f'{user2} - Score: {score2}', True, 'black'), (740, 550))
-    screen.blit(small_font.render(f'{user1} - Score: {score1}', True, 'black'), (740, 25))
+    pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE * 8, SQ_SIZE])
+    pygame.draw.rect(screen, 'black', [602, 1, SQ_SIZE * 8, SQ_SIZE])
+    screen.blit(small_font.render(f'{user2} - Score: {score2}', True, 'white'), (740, 550))
+    screen.blit(small_font.render(f'{user1} - Score: {score1}', True, 'white'), (740, 25))
 
     # load avatar
     ava1 = p.image.load("images/avaWhite1.jpg")
@@ -198,21 +200,36 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
     result = gs.RESULT()
 
     # Surrend
-    global gameOver, turnResult,updated
+    global gameOver, turnResult, updated
     if gameOver == True or result != None:
         if result != None:
             pygame.draw.rect(screen, 'black', [400, 300, 440, 80])
-            screen.blit(small_font.render(f'{result}', True, 'white'), (410, 310))
+
             if result == 'WHITE WIN':
                 if turnResult == True:
+
                     UsersService().updateScoreByUsername(user2, 1)
+                    name = user1 + " LOSE " + user2
+
+                    # Get the current date and time
+                    current_datetime = datetime.now()
+                    # Format the date and time as a string
+                    matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+                    MatchesService().insertMatch(name, matchTime)
+                screen.blit(small_font.render(f'{user2} WON the game', True, 'white'), (410, 310))
             elif result == 'BLACK WIN':
+                screen.blit(small_font.render(f'{user1} WON the game', True, 'white'), (410, 310))
                 if turnResult == True:
                     UsersService().updateScoreByUsername(user1, 1)
+                    name = user1 + " WIN " + user2
+                    # Get the current date and time
+                    current_datetime = datetime.now()
+                    # Format the date and time as a string
+                    matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+                    MatchesService().insertMatch(name,matchTime)
             screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 340))
             turnResult = False
         else:
-
             draw_game_over(screen, gs.whiteToMove, user1, user2)
 
     else:
@@ -234,20 +251,35 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
 
 
 def draw_game_over(screen, winner, user1='user 1', user2='user 2'):
-    global gameOver ,updated
+    global gameOver, updated
 
-    print(f"test surrender ")
+    #print(f"test surrender ")
     pygame.draw.rect(screen, 'black', [400, 300, 440, 80])
     if winner == True:  # white
-        screen.blit(small_font.render(f'Black won the game!', True, 'white'), (410, 310))
+        screen.blit(small_font.render(f'{user1} WON the game!', True, 'white'), (410, 310))
+
         if updated == False:
             UsersService().updateScoreByUsername(user1, 1)
+            name = user1 + " WIN " + user2
+
+            # Get the current date and time
+            current_datetime = datetime.now()
+            # Format the date and time as a string
+            matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+            MatchesService().insertMatch(name, matchTime)
     else:
-        screen.blit(small_font.render(f'White won the game!', True, 'white'), (410, 310))
+        screen.blit(small_font.render(f'{user2} WON the game!', True, 'white'), (410, 310))
         if updated == False:
             UsersService().updateScoreByUsername(user2, 1)
-    updated =True
-    #gameOver = False
+            name = user1 + " LOSE " + user2
+
+            # Get the current date and time
+            current_datetime = datetime.now()
+            # Format the date and time as a string
+            matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+            MatchesService().insertMatch(name, matchTime)
+    updated = True
+    # gameOver = False
     screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 340))
 
     return True
@@ -283,7 +315,7 @@ def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0)
     # global variable
     global gameOver, timeTurn
     global counter, text
-    global turnResult , updated
+    global turnResult, updated
     score1 = UsersService().findScoreByUsername(user1)
     score2 = UsersService().findScoreByUsername(user2)
     turnResult = False
