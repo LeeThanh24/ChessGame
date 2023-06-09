@@ -460,7 +460,7 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
 
-def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
+def main(matchTimes=5 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
     # pygame setup
     # global variable
     global gameOver, timeTurn, playerTime, player2Time, previousPlayer, tempPlayerTime

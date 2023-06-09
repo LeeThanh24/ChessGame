@@ -10,7 +10,7 @@ class MatchesRepository:
         self.cursor= self.connection.getCursor()
     def getAllMatches(self):
         cursor = self.cursor
-        query = "SELECT * FROM matches"
+        query = "SELECT * FROM matches order by match_time"
         cursor.execute(query)
         result = cursor.fetchall()
         matches = []

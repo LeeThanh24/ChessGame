@@ -13,36 +13,55 @@ bishop (B): con tuong
 queen (Q): con hau 
 king (K): con vua 
 """
+import pygame
 from abc import abstractmethod
 import copy
 from tkinter import *
 
+def getInput():
+    def get_mouse_position(event):
+        x = event.x
+        y = event.y
+        global finalResult
+        if x >= 34 and x <= 94 and y >= 21 and y <= 69:
+            # print("QUEEN")
+            finalResult = 'Q'
 
-def submitFunc():
-    global finalResult
-    finalResult = entry.get()
+        elif x >= 138 and x <= 195 and y >= 21 and y <= 70:
+            # print("BISHOP")
+            finalResult = 'B'
 
-    window.destroy()
+        elif x >= 236 and x <= 301 and y >= 24 and y <= 71:
+            # print("N")
+            finalResult = 'N'
 
+        elif x >= 339 and x <= 393 and y >= 21 and y <= 70:
+            # print("ROOK")
+            finalResult = 'R'
 
-def create_ui():
-    global window
+        # print("Mouse position:", x, y)
+
+        window.destroy()
+    # Create the Tkinter window
     window = Tk()
-    window.title("Promotion")
-    window.geometry("+500+400")
+    window.geometry("580x200+800+200")
+    # Load the image
+    imageQ = PhotoImage(file="images/bQ.png")
+    imageR = PhotoImage(file="images/bR.png")
+    imageN = PhotoImage(file="images/bN.png")
+    imageB = PhotoImage(file="images/bB.png")
+    image = PhotoImage(file="images/chessOption.png")
 
-    submit = Button(window, text="submit", command=submitFunc)
-    submit.grid(row=1, column=1)
+    # Create a label to display the image
+    image_label = Label(window, image=image)
+    image_label.place(x=70, y=60)
 
-    label = Label(window, text="R:Rook, B:Bishop, Knight:N, Queen:Q ")
-    label.config(font=("Arial", 30))
-    label.grid(row=0, column=0)
+    # Bind the <Motion> event to the get_mouse_position function
+    window.bind("<Button-1>", get_mouse_position)
 
-    global entry
-    entry = Entry()
-    entry.config(font=('Arial', 50))  # change font
-    entry.config(width=10)  # width displayed in characters
-    entry.grid(row=0, column=1)
+    # Run the Tkinter event loop
+    window.mainloop()
+
 
 
 class GameState:
@@ -192,8 +211,11 @@ class GameState:
         self.player = 'w' if self.whiteToMove == True else 'b'
 
     def promote(self, r, c):
-        create_ui()
-        window.mainloop()
+        # create_ui()
+        # window.mainloop()
+        global  finalResult
+        getInput()
+        print(f"final result : {finalResult}")
         option = finalResult
 
         piece = self.board[r][c]
