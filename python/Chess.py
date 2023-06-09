@@ -530,7 +530,7 @@ def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
             elif e.type == p.MOUSEBUTTONDOWN:
 
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
-                if location[0] > 787 and location[1] > 600:  # surrend button
+                if location[0] >= 392 and location[0] <=776 and location[1] > 600:  # surrend button
                     updated = False
                     gameOver = True
                     # (825, 600)
