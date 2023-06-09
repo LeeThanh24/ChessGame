@@ -62,24 +62,24 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
         backgroundOption = pygame.image.load("images/optionBackground.jpg")
         SCREEN.blit(backgroundOption, (0, 0))
 
-        OPTIONS_TEXT = get_font(60).render("SELECT TIMES", True, "#526D82")
+        OPTIONS_TEXT = get_font(60).render("SELECT BLITZ", True, "#526D82")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(WIDTH / 2, 50))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
-        OPTIONS_30M = Button(image=None, pos=(WIDTH / 2 + 10, 150),
-                             text_input="30 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
-        OPTIONS_30M.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_30M.update(SCREEN)
+        OPTIONS_1M = Button(image=None, pos=(WIDTH / 2 + 10, 150),
+                             text_input="1 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_1M.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_1M.update(SCREEN)
 
-        OPTIONS_60M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
-                             text_input="60 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
-        OPTIONS_60M.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_60M.update(SCREEN)
+        OPTIONS_3M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
+                             text_input="3 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_3M.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_3M.update(SCREEN)
 
-        OPTIONS_90M = Button(image=None, pos=(WIDTH / 2 + 10, 450),
-                             text_input="90 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
-        OPTIONS_90M.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_90M.update(SCREEN)
+        OPTIONS_5M = Button(image=None, pos=(WIDTH / 2 + 10, 450),
+                             text_input="5|5", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_5M.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_5M.update(SCREEN)
 
         OPTIONS_BACK = Button(image=None, pos=(WIDTH / 2 + 10, HEIGHT / 2 + 300),
                               text_input="BACK", font=get_font(40), base_color="Black", hovering_color="Red")
@@ -94,20 +94,20 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu(user1=user1, user2=user2, score1=score1, score2=score2)
-                if OPTIONS_30M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_1M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(30*60)
-                    overallTime = 30 * 60
-                    print(f"overall time now {overallTime} :30mins")
+                    overallTime = 1 * 60
+                    print(f"overall time now {overallTime} :1mins")
                     break
-                if OPTIONS_60M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_3M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(60 * 60)
-                    overallTime = 60 * 60
-                    print(f"overall time now {overallTime} :60mins")
+                    overallTime = 3 * 60
+                    print(f"overall time now {overallTime} :3mins")
                     break
-                if OPTIONS_90M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_5M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(90 * 60)
-                    overallTime = 90 * 60
-                    print(f"overall time now {overallTime} :90mins")
+                    overallTime = 5 * 60
+                    print(f"overall time now {overallTime} :5mins")
                     break
 
         pygame.display.update()
@@ -133,6 +133,7 @@ def paging(user1='user 1', user2='user 2', score1=0, score2=0):
     for i in range(len(matches)):
         temp = (matches[i].name + " " + "<" + matches[i].matchTime + ">")
         content.append(temp)
+    content.reverse()
         # print(f"{temp}")
     print(f"len of content {len(content)}")
     content1 = [

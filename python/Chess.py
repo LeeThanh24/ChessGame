@@ -123,68 +123,186 @@ def drawCaptured(screen, gs):
 
 
 def drawTurn(screen, gs, user1, user2):
-    global counter, count, playerTime, previousPlayer
+    global counter, count, playerTime, player2Time, previousPlayer, tempPlayerTime, turnResult, turn2Result
+    global checkPlusTime, checkPlusTime2, isLastMode, start,player1Color ,player2Color
+    # counter -= 0.019
 
-    counter -= 0.019
-    playerTime -= 0.019
     text = timeCounter(int(counter)).rjust(3)
     playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
-
-    if gs.whiteToMove == False and previousPlayer == 'w':  # from white to black
-        playerTime = 15
-        playerTime -= 0.019
-        playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
-
-    if gs.whiteToMove == True and previousPlayer == 'b':  # from black to white
-        playerTime = 15
-        playerTime -= 0.019
-        playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
-
-    # print (f"text : {text}")
-    if text != "00:00:00":
-        if gs.whiteToMove == True:  # WHITE
-            if playerTimeText != '00:00':
-                previousPlayer = 'w'
-                screen.blit(medium_font.render(f"White turn - {playerTimeText}", True, 'black'), (20, 650))
-                screen.blit(big_font.render(f"{text}", True, 'black'), (480, 640))
+    player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
+    # if gs.whiteToMove == False and previousPlayer == 'w':  # from white to black
+    #     playerTime = tempPlayerTime
+    #     playerTime -= 0.019
+    #     playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+    #
+    if isLastMode == True :
+        if gs.player == 'b' and gs.whiteToMove == False:  # white moved , black not moved
+            if checkPlusTime == False:
+                playerTime += 5
+                checkPlusTime = True
             else:
-                gs.player = 'b'
-                gs.whiteToMove = False
+                playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+                MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, 'black')
+                MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                MATCH_TEXT_RECT.center = (190, 665)
+                screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
 
-            #     gs.whiteToMove = False
-        else:
-            if playerTimeText != '00:00':  # BLACK
-                previousPlayer = 'b'
-                screen.blit(medium_font.render(f"Black turn - {playerTimeText}", True, 'black'), (20, 650))
-                screen.blit(big_font.render(f"{text}", True, 'black'), (480, 640))
+        if gs.player == 'w' and gs.whiteToMove == True:  # black moved , white not moved , except starting time
+            if start == True:
+                if checkPlusTime2 == False:
+
+                    checkPlusTime2 = True
+                else:
+                    player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
+                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                    MATCH_TEXT_RECT.center = (960, 665)
+                    screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+                start = False
             else:
-                gs.player = 'w'
-                gs.whiteToMove = True
+                if checkPlusTime2 == False:
+                    player2Time += 5
+                    checkPlusTime2 = True
+                else:
+                    player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
+                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                    MATCH_TEXT_RECT.center = (960, 665)
+                    screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
 
+        if text != "00:00:00":
+            if gs.player == 'w':  # WHITE
+                if playerTimeText == '00:00':
+                    MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, 'black')
+                    MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                    MATCH_TEXT_RECT.center = (190, 665)
+                    screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
 
-    else:
+                    pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
+                    screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+                    screen.blit(small_font.render(f'{user1} won !', True, 'white'), (410, 350))
+                    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
 
-        countWhite = len(gs.achievement['w'])
-        countBlack = len(gs.achievement['b'])
+                    current_datetime = datetime.now()
+                    # Format the date and time as a string
+                    matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+                    if turnResult == False:
+                        MatchesService().insertMatch(f"{user1} WON {user2}", matchTime)
+                        UsersService().updateScoreByUsername(user1, 1)
+                        turnResult = True
+                else:
+                    playerTime -= 0.019
+                    playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+                    player2Color = 'red'
 
-        if countWhite < countBlack:
-            pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
-            screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
-            screen.blit(small_font.render(f'Black won !', True, 'white'), (410, 350))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
-            UsersService().updateScoreByUsername(user1, 1)
-        elif countWhite > countBlack:
-            pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
-            screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
-            screen.blit(small_font.render(f'White won !', True, 'white'), (410, 350))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
-            UsersService().updateScoreByUsername(user2, 1)
-        else:
-            pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
-            screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
-            screen.blit(small_font.render(f'Draw !', True, 'white'), (410, 350))
-            screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
-        pygame.time.wait(3000)
+                    checkPlusTime = False
+            if checkPlusTime != True:
+                MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, player2Color)
+                MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                MATCH_TEXT_RECT.center = (190, 665)
+                screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+
+            if gs.player == 'b': # BLACK
+                if player2TimeText == '00:00':
+                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                    MATCH_TEXT_RECT.center = (960, 665)
+                    screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+                    pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
+                    screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+                    screen.blit(small_font.render(f'{user2} won !', True, 'white'), (410, 350))
+                    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
+
+                    current_datetime = datetime.now()
+                    # Format the date and time as a string
+                    matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+                    if turn2Result == False:
+                        MatchesService().insertMatch(f"{user1} LOSE {user2}", matchTime)
+                        UsersService().updateScoreByUsername(user2, 1)
+                        turn2Result = True
+                else:
+                    player2Time -= 0.019
+                    player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
+
+                    player1Color ='red'
+                    checkPlusTime2 = False
+            if checkPlusTime2 != True:
+                MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, player1Color)
+                MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                MATCH_TEXT_RECT.center = (960, 665)
+                screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+    else :
+        # if gs.player == 'b' and previousPlayer =='w':  # white moved , black not moved
+        #     playerTime += 5
+        #     playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+        #
+        #
+        # if gs.player == 'w' and previousPlayer =='b':  # black moved , white not moved , except starting time
+        #     player2Time += 5
+        #     player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
+
+        if text != "00:00:00":
+            if gs.player == 'w':  # WHITE
+                if playerTimeText == '00:00':
+                    MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, 'black')
+                    MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                    MATCH_TEXT_RECT.center = (190, 665)
+                    screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+
+                    pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
+                    screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+                    screen.blit(small_font.render(f'{user1} won !', True, 'white'), (410, 350))
+                    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
+
+                    current_datetime = datetime.now()
+                    # Format the date and time as a string
+                    matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+                    if turnResult == False:
+                        MatchesService().insertMatch(f"{user1} WON {user2}", matchTime)
+                        UsersService().updateScoreByUsername(user1, 1)
+                        turnResult = True
+                else:
+                    previousPlayer = 'w'
+                    playerTime -= 0.019
+                    playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
+                    player2Color ='red'
+
+            MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, player2Color)
+            MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+            MATCH_TEXT_RECT.center = (190, 665)
+            screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+            player2Color = 'black'
+            if gs.player == 'b':
+                if player2TimeText == '00:00':
+                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+                    MATCH_TEXT_RECT.center = (960, 665)
+                    screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+                    pygame.draw.rect(screen, 'black', [400, 300, 440, 150])
+                    screen.blit(small_font.render(f"Time's up !", True, 'white'), (410, 310))
+                    screen.blit(small_font.render(f'{user2} won !', True, 'white'), (410, 350))
+                    screen.blit(small_font.render(f'Press ENTER to Restart', True, 'white'), (410, 390))
+
+                    current_datetime = datetime.now()
+                    # Format the date and time as a string
+                    matchTime = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+                    if turn2Result == False:
+                        MatchesService().insertMatch(f"{user1} LOSE {user2}", matchTime)
+                        UsersService().updateScoreByUsername(user2, 1)
+                        turn2Result = True
+
+                else:
+                    previousPlayer = 'b'
+                    player2Time -= 0.019
+                    player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
+
+                    checkPlusTime2 = False
+                    player1Color = 'red'
+            MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, player1Color)
+            MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
+            MATCH_TEXT_RECT.center = (960, 665)
+            screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
+            player1Color = 'black'
 
 
 def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0):
@@ -212,8 +330,8 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
             pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, SQ_SIZE * 8), 2)  # DOC
     # else:
     #     pygame.draw.line(screen, 'black', (SQ_SIZE * i, 0), (SQ_SIZE * i, WIDTH), 2)
-    pygame.draw.line(screen, 'black', (SQ_SIZE * 5 + 10, SQ_SIZE * 8), (SQ_SIZE * 5 + 10, WIDTH), 4)  # DOC
-    pygame.draw.line(screen, 'black', (SQ_SIZE * 5 + 450, SQ_SIZE * 8), (SQ_SIZE * 5 + 450, WIDTH), 4)  # DOC
+    pygame.draw.line(screen, 'black', (SQ_SIZE * 4 + 90, SQ_SIZE * 8,), (SQ_SIZE * 4 + 90, WIDTH), 4)  # DOC
+    pygame.draw.line(screen, 'black', (SQ_SIZE * 9 + 100, SQ_SIZE * 8,), (SQ_SIZE * 9 + 100, WIDTH), 4)  # DOC
 
     # draw user
     pygame.draw.rect(screen, 'black', [602, 526, SQ_SIZE * 8, SQ_SIZE])
@@ -268,7 +386,7 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
     else:
         drawTurn(screen, gs, user1, user2)
 
-    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 8 + 300, 75 * 8 + 45))
+    screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 7-20, 75 * 8 + 45))
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
     # captured move
@@ -342,21 +460,45 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
 
-def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
+def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
     # pygame setup
     # global variable
-    global gameOver, timeTurn, playerTime, previousPlayer
+    global gameOver, timeTurn, playerTime, player2Time, previousPlayer, tempPlayerTime
     global counter, text
-    global turnResult, updated
+    global turnResult, turn2Result, updated, isLastMode, checkPlusTime, checkPlusTime2
+    global start ,player1Color ,player2Color
+
+    start = True
+    # score for users
     score1 = UsersService().findScoreByUsername(user1)
     score2 = UsersService().findScoreByUsername(user2)
+
+    # check if update to database
     turnResult = False
+    turn2Result = False
+
+    # match time
     tempMatchTimes = matchTimes
-    counter, text = matchTimes, '10'.rjust(3)  # overall time of match
-    playerTime = 15
+    counter, text = 60, '10'.rjust(3)  # overall time of match
+    isLastMode = False
+    if matchTimes == 5 * 60:
+        isLastMode = True
+
+    # PLAYER TIME
+    playerTime = matchTimes
+    player2Time = matchTimes
+    tempPlayerTime = matchTimes
+    previousPlayer = 'w'
+    checkPlusTime = False
+    checkPlusTime2 = False
+
+    #PLAYER COLOR
+    player1Color ="red"
+    player2Color ="red"
+
+    # Game over
     timeTurn = 1  # white : 1 , black :0
     gameOver = False
-    previousPlayer = 'w'
 
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()  # doc (https://www.pygame.org/docs/ref/time.html)
@@ -388,7 +530,7 @@ def main(matchTimes=30 * 60, user1='user 1', user2='user 2', score1=0, score2=0)
             elif e.type == p.MOUSEBUTTONDOWN:
 
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
-                if location[0] > 825 and location[1] > 600:  # surrend button
+                if location[0] > 787 and location[1] > 600:  # surrend button
                     updated = False
                     gameOver = True
                     # (825, 600)
