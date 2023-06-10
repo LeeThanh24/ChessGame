@@ -6,6 +6,7 @@ import Engine
 from python.Service.MatchesService import MatchesService
 from python.Service.UsersService import *
 from datetime import datetime
+from tkinter import messagebox
 
 # config
 p.init()
@@ -533,10 +534,12 @@ def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
 
                 location = p.mouse.get_pos()  # (x,y) is location of the mouse
                 if location[0] >= 392 and location[0] <=776 and location[1] > 600:  # surrend button
-                    updated = False
-                    gameOver = True
-                    # (825, 600)
-                    break
+                    result = messagebox.askyesno("Confirmation", "Are you sure you want to surrend ?")
+                    if result:
+                        updated = False
+                        gameOver = True
+                        break
+
                 else:
                     print(f"mouse position : {location}")
                     col = (int)(location[0] // SQ_SIZE)
