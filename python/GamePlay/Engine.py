@@ -24,22 +24,22 @@ def getInput():
         y = event.y
         global finalResult
         if x >= 34 and x <= 94 and y >= 21 and y <= 69:
-            # print("QUEEN")
+
             finalResult = 'Q'
 
         elif x >= 138 and x <= 195 and y >= 21 and y <= 70:
-            # print("BISHOP")
+
             finalResult = 'B'
 
         elif x >= 236 and x <= 301 and y >= 24 and y <= 71:
-            # print("N")
+
             finalResult = 'N'
 
         elif x >= 339 and x <= 393 and y >= 21 and y <= 70:
-            # print("ROOK")
+
             finalResult = 'R'
 
-        # print("Mouse position:", x, y)
+
 
         window.destroy()
     # Create the Tkinter window
@@ -163,7 +163,6 @@ class GameState:
             print(move.pieceMoved.name, move.getChessNotation())
 
             self.moveLog.append(move)  # log the move in order to  undo if necessary
-
             self.whiteToMove = not self.whiteToMove  # swap player
             self.player = 'w' if self.whiteToMove == True else 'b'
 

@@ -65,58 +65,57 @@ def drawCaptured(screen, gs):
         # BLACK
         if len(gs.achievement['w']) > 2 * capturedInt:
             for i in range(capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(600, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(capturedInt, 2 * capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(2 * capturedInt, len(gs.achievement['w'])):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(760, (i - 2 * capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         elif len(gs.achievement['w']) > capturedInt:
             for i in range(capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(600, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(capturedInt, len(gs.achievement['w'])):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(680, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else:
             for i in range(len(gs.achievement['w'])):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"b{gs.achievement['w'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(600, (i + 1) * SQ_SIZE, 1, 1))
 
         # WHITE
         if len(gs.achievement['b']) > 2 * capturedInt:
             for i in range(capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"w{gs.achievement['b'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(840, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(capturedInt, 2 * capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"w{gs.achievement['b'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(2 * capturedInt, len(gs.achievement['b'])):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"w{gs.achievement['b'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(1010, (i - 2 * capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         if len(gs.achievement['b']) > capturedInt:
             for i in range(capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"w{gs.achievement['b'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(840, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             for i in range(capturedInt, 2 * capturedInt):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"w{gs.achievement['b'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(930, (i - capturedInt + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         else:
             for i in range(len(gs.achievement['b'])):
-                # print(f"co an w{gs.achievement['w'][i].type}", end=" ")
+
                 temp = str(f"w{gs.achievement['b'][i].type}")
                 screen.blit(IMAGES[temp], p.Rect(840, (i + 1) * SQ_SIZE, SQ_SIZE, SQ_SIZE))
     except:
@@ -355,6 +354,11 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
     # captured move
     drawCaptured(screen, gs)
 
+    listMove = gs.moveLog
+    # for move in listMove :
+    #     if move !=None  :
+    #         print(move.pieceMoved.name, move.getChessNotation())
+
     # Surrend
     global gameOver, turnResult, updated
     if gameOver == True or result != None:
@@ -407,7 +411,7 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
 def draw_game_over(screen, winner, user1='user 1', user2='user 2'):
     global gameOver, updated
 
-    # print(f"test surrender ")
+
     pygame.draw.rect(screen, 'black', [400, 300, 440, 80])
     if winner == True:  # white
         screen.blit(small_font.render(f'{user1} WON the game!', True, 'white'), (410, 310))
@@ -526,7 +530,7 @@ def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
                 gameOver = False
                 main(matchTimes=tempMatchTimes, user1=user1, user2=user2, score1=score1, score2=score2)
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:  # P button
-                print("return to menu")
+
                 mainMenu(user1=user1, user2=user2, score1=score1, score2=score2)
                 # tuple[0]
 
@@ -541,7 +545,7 @@ def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
                         break
 
                 else:
-                    print(f"mouse position : {location}")
+
                     col = (int)(location[0] // SQ_SIZE)
                     row = (int)(location[1] // SQ_SIZE)
                     if sqSelected == (row, col):  # the user clicked the same square twice
