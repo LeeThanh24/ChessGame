@@ -46,11 +46,11 @@ def getInput():
     window = Tk()
     window.geometry("580x200+800+200")
     # Load the image
-    imageQ = PhotoImage(file="images/bQ.png")
-    imageR = PhotoImage(file="images/bR.png")
-    imageN = PhotoImage(file="images/bN.png")
-    imageB = PhotoImage(file="images/bB.png")
-    image = PhotoImage(file="images/chessOption.png")
+    imageQ = PhotoImage(file="../images/bQ.png")
+    imageR = PhotoImage(file="../images/bR.png")
+    imageN = PhotoImage(file="../images/bN.png")
+    imageB = PhotoImage(file="../images/bB.png")
+    image = PhotoImage(file="../images/chessOption.png")
 
     # Create a label to display the image
     image_label = Label(window, image=image)

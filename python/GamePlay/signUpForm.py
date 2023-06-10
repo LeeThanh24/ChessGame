@@ -4,7 +4,7 @@ from python.Service.UsersService import *
 
 
 def foo ():
-    from loginForm import main
+    from python.GamePlay.Main import main
     return main()
 def main ():
     window = Tk()
@@ -14,7 +14,7 @@ def main ():
     window.resizable(False, False)
 
 
-    img = PhotoImage(file='images/signUp.png', master= window)
+    img = PhotoImage(file='../images/signUp.png', master= window)
     Label(window, image=img,border=0, bg='white').place(x=50, y=90)
 
     frame = Frame(window, width=350, height=390, bg='#fff')

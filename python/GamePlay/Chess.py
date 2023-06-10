@@ -31,14 +31,14 @@ LOAD IMAGE FOR ALL PIECES
 
 
 def mainMenu(user1='user 1', user2='user 2', score1=0, score2=0):
-    from main import main_menu as menu
+    from Menu import main_menu as menu
     return menu(user1=user1, user2=user2, score1=score1, score2=score2)
 
 
 def loadImages():
     pieces = ['bp', "bR", "bN", "bB", "bQ", "bK", "wR", "wN", "wB", "wQ", "wK", 'wp']
     for piece in pieces:
-        IMAGES[piece] = p.transform.scale(p.image.load("images/" + piece + ".png"), (
+        IMAGES[piece] = p.transform.scale(p.image.load("../images/" + piece + ".png"), (
             SQ_SIZE, SQ_SIZE))  # Resizes the Surface to a new size, given as (width, height)
 
 
@@ -340,16 +340,19 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
     screen.blit(small_font.render(f'{user1} - Score: {score1}', True, 'white'), (740, 25))
 
     # load avatar
-    ava1 = p.image.load("images/avaWhite1.jpg")
+    ava1 = p.image.load("../images/avaWhite1.jpg")
     ava1 = p.transform.scale(ava1, (SQ_SIZE - 4, SQ_SIZE - 4))
     screen.blit(ava1, (620, 528))
 
-    ava2 = p.image.load("images/avaWhite1.jpg")
+    ava2 = p.image.load("../images/avaWhite1.jpg")
     ava2 = p.transform.scale(ava2, (SQ_SIZE - 4, SQ_SIZE - 4))
     screen.blit(ava2, (620, 3))
 
     # result
     result = gs.RESULT()
+
+    # captured move
+    drawCaptured(screen, gs)
 
     # Surrend
     global gameOver, turnResult, updated
@@ -389,8 +392,7 @@ def drawGameState(screen, gs, user1='user 1', user2='user 2', score1=0, score2=0
     screen.blit(medium_font.render(" Surrend", True, 'black'), (75 * 7-20, 75 * 8 + 45))
     pygame.draw.line(screen, 'black', (0, 75 * 8), (WIDTH, 75 * 8), 2)
 
-    # captured move
-    drawCaptured(screen, gs)
+
 
     # warning checkamte
     rK, cK = gs.teams[gs.player]['K'][0].position

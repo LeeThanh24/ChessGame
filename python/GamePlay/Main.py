@@ -1,6 +1,6 @@
 from tkinter import *
 import signUpForm
-from python import main
+from python.GamePlay import Menu
 from python.Service.UsersService import *
 from tkinter import messagebox
 
@@ -38,7 +38,7 @@ def loginForm():
         if usersService.checkLogin(username, passw) and usersService.checkLogin(username2,
                                                                                 passw2) and username != username2:
             root.destroy()
-            main.main_menu(username, username2,score1,score2)
+            Menu.main_menu(username, username2, score1, score2)
         else:
             messagebox.showinfo("Login", "Login failed !")
 

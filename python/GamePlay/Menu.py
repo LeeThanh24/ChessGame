@@ -3,7 +3,6 @@ import sys
 import Chess
 from button import Button
 from python.Service.MatchesService import MatchesService
-from datetime import datetime
 
 overallTime = 0
 
@@ -22,11 +21,11 @@ def initMenu():
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Menu")
 
-    BG = pygame.image.load("images/chessBackground2.jpg")
+    BG = pygame.image.load("../images/chessBackground2.jpg")
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
-    return pygame.font.Font("images/font.ttf", size)
+    return pygame.font.Font("../images/font.ttf", size)
 
 
 def play():
@@ -59,27 +58,27 @@ def play():
 def options(user1='user 1', user2='user 2', score1=0, score2=0):
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
-        backgroundOption = pygame.image.load("images/optionBackground.jpg")
+        backgroundOption = pygame.image.load("../images/optionBackground.jpg")
         SCREEN.blit(backgroundOption, (0, 0))
 
         OPTIONS_TEXT = get_font(60).render("SELECT BLITZ", True, "#526D82")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(WIDTH / 2, 50))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
-        OPTIONS_1M = Button(image=None, pos=(WIDTH / 2 + 10, 150),
-                             text_input="1 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
-        OPTIONS_1M.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_1M.update(SCREEN)
-
-        OPTIONS_3M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
+        OPTIONS_3M = Button(image=None, pos=(WIDTH / 2 + 10, 150),
                              text_input="3 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
         OPTIONS_3M.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_3M.update(SCREEN)
 
-        OPTIONS_5M = Button(image=None, pos=(WIDTH / 2 + 10, 450),
-                             text_input="5|5", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_5M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
+                             text_input="5 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
         OPTIONS_5M.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_5M.update(SCREEN)
+
+        OPTIONS_55M = Button(image=None, pos=(WIDTH / 2 + 10, 450),
+                             text_input="5|5", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_55M.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_55M.update(SCREEN)
 
         OPTIONS_BACK = Button(image=None, pos=(WIDTH / 2 + 10, HEIGHT / 2 + 300),
                               text_input="BACK", font=get_font(40), base_color="Black", hovering_color="Red")
@@ -94,17 +93,17 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu(user1=user1, user2=user2, score1=score1, score2=score2)
-                if OPTIONS_1M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_3M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(30*60)
-                    overallTime = 1 * 60
+                    overallTime = 3 * 60
                     print(f"overall time now {overallTime} :1mins")
                     break
-                if OPTIONS_3M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_5M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(60 * 60)
-                    overallTime = 3 * 60
+                    overallTime = 5 * 60
                     print(f"overall time now {overallTime} :3mins")
                     break
-                if OPTIONS_5M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_55M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(90 * 60)
                     overallTime = 5 * 60
                     print(f"overall time now {overallTime} :5mins")
@@ -289,14 +288,14 @@ def main_menu(user1='user 1', user2='user 2', score1=0, score2=0):
         MENU_TEXT = get_font(70).render("MAIN MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(WIDTH / 2, 80))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("images/Play Rect.png"), pos=(WIDTH / 2, 200),
+        PLAY_BUTTON = Button(image=pygame.image.load("../images/Play Rect.png"), pos=(WIDTH / 2, 200),
                              text_input="PLAY", font=get_font(40), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("images/Play Rect.png"), pos=(WIDTH / 2, 350),
+        OPTIONS_BUTTON = Button(image=pygame.image.load("../images/Play Rect.png"), pos=(WIDTH / 2, 350),
                                 text_input="OPTIONS", font=get_font(40), base_color="#d7fcd4", hovering_color="White")
 
-        HISTORY_BUTTON = Button(image=pygame.image.load("images/Play Rect.png"), pos=(WIDTH / 2, 500),
+        HISTORY_BUTTON = Button(image=pygame.image.load("../images/Play Rect.png"), pos=(WIDTH / 2, 500),
                                 text_input="HISTORY", font=get_font(40), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("images/Play Rect.png"), pos=(WIDTH / 2, 650),
+        QUIT_BUTTON = Button(image=pygame.image.load("../images/Play Rect.png"), pos=(WIDTH / 2, 650),
                              text_input="QUIT", font=get_font(40), base_color="#d7fcd4", hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
