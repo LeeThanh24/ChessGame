@@ -21,7 +21,7 @@ def initMenu():
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Menu")
 
-    BG = pygame.image.load("../images/chessBackground2.jpg")
+    BG = pygame.image.load("../images/chessBackground.jpg")
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -70,10 +70,10 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
         OPTIONS_3M.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_3M.update(SCREEN)
 
-        OPTIONS_6M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
-                             text_input="6 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
-        OPTIONS_6M.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_6M.update(SCREEN)
+        OPTIONS_5M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
+                             text_input="5 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_5M.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_5M.update(SCREEN)
 
         OPTIONS_55M = Button(image=None, pos=(WIDTH / 2 + 10, 450),
                              text_input="5|5", font=get_font(50), base_color="Black", hovering_color="White")
@@ -85,7 +85,7 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
 
-        global overallTime
+        global overallTime ,  lastModePlugIn
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -96,16 +96,19 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
                 if OPTIONS_3M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(30*60)
                     overallTime = 3 * 60
-                    print(f"overall time now {overallTime} :1mins")
-                    break
-                if OPTIONS_6M.checkForInput(OPTIONS_MOUSE_POS):
-                    # matchTimes(60 * 60)
-                    overallTime = 6 * 60
+                    lastModePlugIn = False
                     print(f"overall time now {overallTime} :3mins")
+                    break
+                if OPTIONS_5M.checkForInput(OPTIONS_MOUSE_POS):
+                    # matchTimes(60 * 60)
+                    overallTime = 5 * 60
+                    lastModePlugIn = False
+                    print(f"overall time now {overallTime} :5mins")
                     break
                 if OPTIONS_55M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(90 * 60)
                     overallTime = 5 * 60
+                    lastModePlugIn= True
                     print(f"overall time now {overallTime} :5mins")
                     break
 
@@ -311,15 +314,17 @@ def main_menu(user1='user 1', user2='user 2', score1=0, score2=0):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     # play()
-                    print(f"time in main.py {overallTime}")
+                    global  lastModePlugIn
+                    print(f"time in main.py {overallTime} and last mode plug in {lastModePlugIn}")
 
                     if overallTime != 0:
-                        Chess.main(matchTimes=overallTime, user1=user1, user2=user2, score1=score1, score2=score2)
+                        Chess.main(matchTimes=overallTime, user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugIn=lastModePlugIn)
                     else:
-                        Chess.main(user1=user1, user2=user2, score1=score1, score2=score2)
+                        Chess.main(user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugIn=lastModePlugIn)
                     return
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options(user1=user1, user2=user2, score1=score1, score2=score2)
+
 
                 if HISTORY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     # history(user1=user1,user2=user2,score1=score1,score2=score2)

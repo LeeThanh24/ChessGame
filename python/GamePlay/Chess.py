@@ -467,14 +467,15 @@ def highlightSquare(screen, gs, validMoves, squareSelected):
 '''MAIN DRIVER FOR CODE. UPDATING THE GRPHICS'''
 
 
-def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
-    # pygame setup
+def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0,lastModePlugIn = False):
+
     # global variable
     global gameOver, timeTurn, playerTime, player2Time, previousPlayer, tempPlayerTime
     global counter, text
     global turnResult, turn2Result, updated, isLastMode, checkPlusTime, checkPlusTime2
     global start ,player1Color ,player2Color
 
+    # pygame setup
     start = True
     # score for users
     score1 = UsersService().findScoreByUsername(user1)
@@ -488,7 +489,7 @@ def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0):
     tempMatchTimes = matchTimes
     counter, text = 60, '10'.rjust(3)  # overall time of match
     isLastMode = False
-    if matchTimes == 5 * 60:
+    if matchTimes == 5 * 60 and lastModePlugIn ==True:
         isLastMode = True
 
     # PLAYER TIME
