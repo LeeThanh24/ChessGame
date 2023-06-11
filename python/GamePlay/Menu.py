@@ -70,10 +70,10 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
         OPTIONS_3M.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_3M.update(SCREEN)
 
-        OPTIONS_5M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
-                             text_input="5 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
-        OPTIONS_5M.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_5M.update(SCREEN)
+        OPTIONS_6M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
+                             text_input="6 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
+        OPTIONS_6M.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_6M.update(SCREEN)
 
         OPTIONS_55M = Button(image=None, pos=(WIDTH / 2 + 10, 450),
                              text_input="5|5", font=get_font(50), base_color="Black", hovering_color="White")
@@ -98,9 +98,9 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
                     overallTime = 3 * 60
                     print(f"overall time now {overallTime} :1mins")
                     break
-                if OPTIONS_5M.checkForInput(OPTIONS_MOUSE_POS):
+                if OPTIONS_6M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(60 * 60)
-                    overallTime = 5 * 60
+                    overallTime = 6 * 60
                     print(f"overall time now {overallTime} :3mins")
                     break
                 if OPTIONS_55M.checkForInput(OPTIONS_MOUSE_POS):
