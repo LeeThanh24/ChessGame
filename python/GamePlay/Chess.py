@@ -142,7 +142,7 @@ def drawTurn(screen, gs, user1, user2):
                 checkPlusTime = True
             else:
                 playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
-                MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, 'black')
+                MATCH_TEXT = medium_font.render(f"{user2} - {playerTimeText}", True, 'black')
                 MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                 MATCH_TEXT_RECT.center = (190, 665)
                 screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -154,7 +154,7 @@ def drawTurn(screen, gs, user1, user2):
                     checkPlusTime2 = True
                 else:
                     player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
-                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT = medium_font.render(f"{user1} - {player2TimeText}", True, 'black')
                     MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                     MATCH_TEXT_RECT.center = (960, 665)
                     screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -165,7 +165,7 @@ def drawTurn(screen, gs, user1, user2):
                     checkPlusTime2 = True
                 else:
                     player2TimeText = eachTimeCounter(int(player2Time)).rjust(3)
-                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT = medium_font.render(f"{user1} - {player2TimeText}", True, 'black')
                     MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                     MATCH_TEXT_RECT.center = (960, 665)
                     screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -173,7 +173,7 @@ def drawTurn(screen, gs, user1, user2):
         if text != "00:00:00":
             if gs.player == 'w':  # WHITE
                 if playerTimeText == '00:00':
-                    MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, 'black')
+                    MATCH_TEXT = medium_font.render(f"{user2} - {playerTimeText}", True, 'black')
                     MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                     MATCH_TEXT_RECT.center = (190, 665)
                     screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -197,14 +197,14 @@ def drawTurn(screen, gs, user1, user2):
 
                     checkPlusTime = False
             if checkPlusTime != True:
-                MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, player2Color)
+                MATCH_TEXT = medium_font.render(f"{user2} - {playerTimeText}", True, player2Color)
                 MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                 MATCH_TEXT_RECT.center = (190, 665)
                 screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
 
             if gs.player == 'b': # BLACK
                 if player2TimeText == '00:00':
-                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT = medium_font.render(f"{user1} - {player2TimeText}", True, 'black')
                     MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                     MATCH_TEXT_RECT.center = (960, 665)
                     screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -227,7 +227,7 @@ def drawTurn(screen, gs, user1, user2):
                     player1Color ='red'
                     checkPlusTime2 = False
             if checkPlusTime2 != True:
-                MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, player1Color)
+                MATCH_TEXT = medium_font.render(f"{user1} - {player2TimeText}", True, player1Color)
                 MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                 MATCH_TEXT_RECT.center = (960, 665)
                 screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -244,7 +244,7 @@ def drawTurn(screen, gs, user1, user2):
         if text != "00:00:00":
             if gs.player == 'w':  # WHITE
                 if playerTimeText == '00:00':
-                    MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, 'black')
+                    MATCH_TEXT = medium_font.render(f"{user2} - {playerTimeText}", True, 'black')
                     MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                     MATCH_TEXT_RECT.center = (190, 665)
                     screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -267,14 +267,14 @@ def drawTurn(screen, gs, user1, user2):
                     playerTimeText = eachTimeCounter(int(playerTime)).rjust(3)
                     player2Color ='red'
 
-            MATCH_TEXT = medium_font.render(f"{user2} turn - {playerTimeText}", True, player2Color)
+            MATCH_TEXT = medium_font.render(f"{user2} - {playerTimeText}", True, player2Color)
             MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
             MATCH_TEXT_RECT.center = (190, 665)
             screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
             player2Color = 'black'
             if gs.player == 'b':
                 if player2TimeText == '00:00':
-                    MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, 'black')
+                    MATCH_TEXT = medium_font.render(f"{user1} - {player2TimeText}", True, 'black')
                     MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
                     MATCH_TEXT_RECT.center = (960, 665)
                     screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
@@ -298,7 +298,7 @@ def drawTurn(screen, gs, user1, user2):
 
                     checkPlusTime2 = False
                     player1Color = 'red'
-            MATCH_TEXT = medium_font.render(f"{user1} turn - {player2TimeText}", True, player1Color)
+            MATCH_TEXT = medium_font.render(f"{user1} - {player2TimeText}", True, player1Color)
             MATCH_TEXT_RECT = MATCH_TEXT.get_rect()
             MATCH_TEXT_RECT.center = (960, 665)
             screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)

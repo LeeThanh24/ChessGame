@@ -15,6 +15,7 @@ def getMatchTimes():
 def initMenu():
     pygame.init()
     global SCREEN, BG, WIDTH, HEIGHT
+
     WIDTH = 900
     HEIGHT = 720
 
@@ -283,6 +284,8 @@ def main_menu(user1='user 1', user2='user 2', score1=0, score2=0):
     initMenu()
     print(f"user 1 {user1} - score1 {score1}")
     print(f"user 2 {user2} - score2 {score2}")
+    global lastModePlugIn
+
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -314,8 +317,8 @@ def main_menu(user1='user 1', user2='user 2', score1=0, score2=0):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     # play()
-                    global  lastModePlugIn
-                    print(f"time in main.py {overallTime} and last mode plug in {lastModePlugIn}")
+
+                    #print(f"time in main.py {overallTime} and last mode plug in {lastModePlugIn}")
 
                     if overallTime != 0:
                         Chess.main(matchTimes=overallTime, user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugIn=lastModePlugIn)
