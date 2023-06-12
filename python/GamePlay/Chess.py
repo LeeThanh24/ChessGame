@@ -31,9 +31,9 @@ LOAD IMAGE FOR ALL PIECES
 '''
 
 
-def mainMenu(user1='user 1', user2='user 2', score1=0, score2=0):
+def mainMenu(user1='user 1', user2='user 2', score1=0, score2=0,lastModePlugIn=False):
     from Menu import main_menu as menu
-    return menu(user1=user1, user2=user2, score1=score1, score2=score2)
+    return menu(user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugInPar=lastModePlugIn)
 
 
 def loadImages():
@@ -532,7 +532,7 @@ def main(matchTimes=1 * 60, user1='user 1', user2='user 2', score1=0, score2=0,l
                 main(matchTimes=tempMatchTimes, user1=user1, user2=user2, score1=score1, score2=score2)
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:  # P button
 
-                mainMenu(user1=user1, user2=user2, score1=score1, score2=score2)
+                mainMenu(user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugIn=lastModePlugIn)
                 # tuple[0]
 
             elif e.type == p.MOUSEBUTTONDOWN:

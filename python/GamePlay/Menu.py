@@ -57,6 +57,7 @@ def play():
 
 
 def options(user1='user 1', user2='user 2', score1=0, score2=0):
+    global overallTime, lastModePlugIn
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
         backgroundOption = pygame.image.load("../images/optionBackground.jpg")
@@ -67,12 +68,12 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
         OPTIONS_3M = Button(image=None, pos=(WIDTH / 2 + 10, 150),
-                             text_input="3 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
+                            text_input="3 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
         OPTIONS_3M.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_3M.update(SCREEN)
 
         OPTIONS_5M = Button(image=None, pos=(WIDTH / 2 + 10, 300),
-                             text_input="5 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
+                            text_input="5 Minutes", font=get_font(50), base_color="Black", hovering_color="White")
         OPTIONS_5M.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_5M.update(SCREEN)
 
@@ -86,14 +87,13 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
 
-        global overallTime ,  lastModePlugIn
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu(user1=user1, user2=user2, score1=score1, score2=score2)
+                    main_menu(user1=user1, user2=user2, score1=score1, score2=score2, lastModePlugInPar=lastModePlugIn)
                 if OPTIONS_3M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(30*60)
                     overallTime = 3 * 60
@@ -109,14 +109,14 @@ def options(user1='user 1', user2='user 2', score1=0, score2=0):
                 if OPTIONS_55M.checkForInput(OPTIONS_MOUSE_POS):
                     # matchTimes(90 * 60)
                     overallTime = 5 * 60
-                    lastModePlugIn= True
+                    lastModePlugIn = True
                     print(f"overall time now {overallTime} :5mins")
                     break
 
         pygame.display.update()
 
 
-def paging(user1='user 1', user2='user 2', score1=0, score2=0):
+def paging(user1='user 1', user2='user 2', score1=0, score2=0,lastModePlugInPar=False):
     # Initialize Pygame
     pygame.init()
 
@@ -137,7 +137,7 @@ def paging(user1='user 1', user2='user 2', score1=0, score2=0):
         temp = (matches[i].name + " " + "<" + matches[i].matchTime + ">")
         content.append(temp)
     content.reverse()
-        # print(f"{temp}")
+    # print(f"{temp}")
     print(f"len of content {len(content)}")
     content1 = [
         "Page 1 - Line 1",
@@ -208,13 +208,10 @@ def paging(user1='user 1', user2='user 2', score1=0, score2=0):
             MATCH_TEXT_RECT.center = (900 // 2, 130 + i * 70)
             screen.blit(MATCH_TEXT, MATCH_TEXT_RECT)
 
-
         # Render and blit the page number to the screen
         page_text = f"Page {current_page}"
         page_surface = font.render(page_text, True, BLACK)
         screen.blit(page_surface, (420, 600))
-
-
 
         # Check for events
         for event in pygame.event.get():
@@ -222,36 +219,21 @@ def paging(user1='user 1', user2='user 2', score1=0, score2=0):
             def checkBackButton(x, y):
                 if x >= 381 and x <= 531 and y >= 644 and y <= 670:
                     return True
+
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:  # Press SPACE to go to the next page
                     current_page += 1
-                    if current_page > (len(content) / lines_per_page)+1:
+                    if current_page > (len(content) / lines_per_page) + 1:
                         current_page = 1
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                x,y=event.pos
+                x, y = event.pos
                 if event.button == 1:  # Left mouse button
-                    #print("Left mouse button pressed at", event.pos)
-                    if checkBackButton(x,y):
-                        #print("yes x y ")
-                        main_menu(user1=user1, user2=user2, score1=score1, score2=score2)
-                elif event.button == 3:  # Right mouse button
-                    #print("Right mouse button pressed at", event.pos)
-                    pass
-            elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:  # Left mouse button
-                    #print("Left mouse button released at", event.pos)
-                    pass
-                elif event.button == 3:  # Right mouse button
-                    #print("Right mouse button released at", event.pos)
-                    pass
-            elif event.type == pygame.MOUSEMOTION:
-                pass
-                #print("Mouse moved to", event.pos)
-                # 381 644
-                # 531 670
-            #
+                    # print("Left mouse button pressed at", event.pos)
+                    if checkBackButton(x, y):
+                        # print("yes x y ")
+                        main_menu(user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugInPar=lastModePlugInPar)
         # Update the display
         pygame.display.flip()
 
@@ -259,33 +241,13 @@ def paging(user1='user 1', user2='user 2', score1=0, score2=0):
     pygame.quit()
 
 
-def history(user1='user 1', user2='user 2', score1=0, score2=0):
-    running = True
-    while running:
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        OPTIONS_BACK = Button(image=None, pos=(WIDTH / 2 + 10, HEIGHT / 2 + 300),
-                              text_input="BACK", font=get_font(40), base_color="Black", hovering_color="Red")
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu(user1=user1, user2=user2, score1=score1, score2=score2)
-
-        pygame.display.update()
-
-
-def main_menu(user1='user 1', user2='user 2', score1=0, score2=0):
+def main_menu(user1='user 1', user2='user 2', score1=0, score2=0, lastModePlugInPar=False):
     initMenu()
     print(f"user 1 {user1} - score1 {score1}")
     print(f"user 2 {user2} - score2 {score2}")
     global lastModePlugIn
-
+    lastModePlugIn = lastModePlugInPar
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -318,20 +280,23 @@ def main_menu(user1='user 1', user2='user 2', score1=0, score2=0):
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     # play()
 
-                    #print(f"time in main.py {overallTime} and last mode plug in {lastModePlugIn}")
+                    print(f"time in main.py {overallTime} and last mode plug in {lastModePlugIn}")
 
                     if overallTime != 0:
-                        Chess.main(matchTimes=overallTime, user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugIn=lastModePlugIn)
+
+                        Chess.main(matchTimes=overallTime, user1=user1, user2=user2, score1=score1, score2=score2,
+                                   lastModePlugIn=lastModePlugIn)
+
                     else:
-                        Chess.main(user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugIn=lastModePlugIn)
+                        Chess.main(user1=user1, user2=user2, score1=score1, score2=score2,
+                                   lastModePlugIn=lastModePlugIn)
                     return
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options(user1=user1, user2=user2, score1=score1, score2=score2)
 
-
                 if HISTORY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     # history(user1=user1,user2=user2,score1=score1,score2=score2)
-                    paging(user1=user1,user2=user2,score1=score1,score2=score2)
+                    paging(user1=user1, user2=user2, score1=score1, score2=score2,lastModePlugInPar=lastModePlugIn)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
