@@ -193,7 +193,7 @@ class GameState:
 
     def en_passant(self, r, c, r_des, c_des):
         piece = self.board[r][c]
-        piece_captured = self.board[r_des][c_des]
+        piece_captured = self.board[r][c_des]
         action = Move((r, c), (r_des, c_des), self.board)
         action.pieceCaptured = self.board[r][c_des]
 
